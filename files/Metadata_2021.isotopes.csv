@@ -1,0 +1,12 @@
+﻿Metadata,
+,
+Plot.Myc.Legacy,the dominant mycorrhizal association of the trees that previously occupied the area before the clear cut
+Species.Myc.Type,the (dominant) mycorrhizal association of the trees measured
+Unit,the unique numerical identifier of the specific clear cut site. There are eight in total. 
+Position,indicates if the tree was closer to the center or the edge of the plot
+Identifier.1,"this is a unique identifier for each data point which indicates the unit, species, and position (c for center, E for edge) "
+corrected.percent.C,the percent carbon present in the leaf samples
+corrected.percent.N,the percent nitrogen present in the leaf samples
+C:N,ratio of the percent carbon to the percent nitrogen present in the leaf
+C13.corrected,ratio or percent 13C (the heavier and less common  naturally-occuring Carbon isotope) to percent 12C (the most common carbon isotope)
+N15.corrected,ratio or percent 15N (the heavier and less common  naturally-occuring Nitrogen isotope) to percent 14N (the most common Nitrogen isotope)
