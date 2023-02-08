@@ -1,7 +1,7 @@
-# library(shiny)
-# library(slickR)
-# library(ggplot2)
-
+library(shiny)
+library(slickR)
+library(ggplot2)
+# 
 # seedling_dat <- read.csv("./files/Corinth_seedling_data.csv")
 # soil_dat <- read.csv("./files/Soil_data.csv")
 # isotope_dat <- read.csv("./files/Datasheet_2021.isotopes.csv")
@@ -16,60 +16,75 @@ seedling_dat$Slash <- factor(seedling_dat$Slash)
 ui <- navbarPage(
   theme = bslib::bs_theme(bootswatch = "lux"),
   "HBEF Mycorrhizal Data",   
-
+  
   # Skeleton for tab panels across top
+  
   
   # Home page with image gallery 
   tabPanel("Home",
-           slickROutput("slickr", width = "800px")
-           
-           
+           titlePanel("Welcome to our app!"),
+           slickROutput("slickr", width = "500px"),
+           slickROutput("captions", width = "500px")
            ),
   
-  # Data page with plots
-  tabPanel("Data",
-           titlePanel("Seedling Plot"),
-           
-           sidebarLayout(
-             sidebarPanel(
-               selectInput(inputId = "VarX",
-                           label = "Select X-axis Variable:",
-                           choices = list("MT",
-                                          "Species",
-                                          "Treatment",
-                                          "Slash",
-                                          "Soil")),
-               selectInput(inputId = "VarY",
-                           label = "Select Y-axis Variable:",
-                           choices = list("survival",
-                                          "HT.cm",
-                                          "Biomass.g")),
-               radioButtons("rb", "Choose Display:",
-                            choiceNames = list("violin plot",
-                                               "bar plot",
-                                               "box plot"),
-                            choiceValues =list("violin",
-                                               "bar",
-                                               "box")
-               ),
-             ),
-             
-             mainPanel(plotOutput("MychPlot"))
+  # Data page for navigation between datasets
+  navbarMenu("Data",
+       tabPanel("Seedling Data",
+                tabPanel("Seedling Plot", "seedling"),
+                
+                sidebarLayout(
+                  sidebarPanel(
+                    selectInput(inputId = "VarX",
+                                label = "Select X-axis Variable:",
+                                choices = list("MT",
+                                               "Species",
+                                               "Treatment",
+                                               "Slash",
+                                               "Soil")),
+                    selectInput(inputId = "VarY",
+                                label = "Select Y-axis Variable:",
+                                choices = list("survival",
+                                               "HT.cm",
+                                               "Biomass.g")),
+                    radioButtons("rb", "Choose Display:",
+                                 choiceNames = list("violin plot",
+                                                    "bar plot",
+                                                    "box plot"),
+                                 choiceValues =list("violin",
+                                                    "bar",
+                                                    "box")
+                    ),
+                  ),
+                  
+                  mainPanel(plotOutput("seedlingplot"))
+                )
+          
+                ),
+       tabPanel("Isotope Data", "isotope"),
+       tabPanel("Anion Data", "four-c")),
+  
+  # Tree info page, navbar menu for selection between species
+  navbarMenu("Tree Information",
+           tabPanel("Tree Catalog",
+                    tabsetPanel(id="species",
+                                tabPanel("oak", "one"),
+                                tabPanel("maple", "two"),
+                                tabPanel("cherry", "three")
+                      
+                    )
+           ),
+           tabPanel("Planting Recommendations"
            )
-           
-           ),
-  
-  # Tree info page
-  tabPanel("Tree Information", "info")
+  ),
 )
 
 server <- function(input, output, session) {
   output$slickr <- renderSlickR({
-    imgs <- list.files("C:/Users/17865/OneDrive/Desktop/Senior Year Spring/EDS Capstone/Draft1/img", pattern=".jpg", full.names = TRUE)
-    slickR(imgs)+ 
-      settings(dots = TRUE, autoplay = TRUE)
+    imgs <- list.files("C:/Users/17865/OneDrive/Desktop/Senior Year Spring/EDS Capstone/S23-EDS-Fungi/images", pattern=".jpg", full.names = TRUE)
+    slickR(imgs) + settings(dots = TRUE, autoplay = TRUE, autoplaySpeed = 2500)
+   
   })
-  output$MychPlot <- renderPlot({
+  output$seedlingplot <- renderPlot({
     
     if (input$rb == "violin") {
       dataset <- seedling_dat[ ,c(input$VarX,input$VarY)]
@@ -99,6 +114,10 @@ server <- function(input, output, session) {
         scale_fill_manual(values = cbPalette)
     }
   },height = 600,width = 800)
+  
+  
+  output$species <- renderText("this is an oak")
+  
   
 }
 
