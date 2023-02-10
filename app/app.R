@@ -1,6 +1,6 @@
-library(shiny)
-library(slickR)
-library(ggplot2)
+# library(shiny)
+# library(slickR)
+# library(ggplot2)
 # 
 # seedling_dat <- read.csv("./files/Corinth_seedling_data.csv")
 # soil_dat <- read.csv("./files/Soil_data.csv")
@@ -12,36 +12,41 @@ cbPalette <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2",
 
 seedling_dat$Slash <- factor(seedling_dat$Slash)
 
-
+# Using navbar page to structure the overall app. This will categorize the app into 
+# distinct sections: Home page, data page, tree information page. 
 ui <- navbarPage(
+  
+  # Changing the theme to minimalist black-on-white appearance
   theme = bslib::bs_theme(bootswatch = "lux"),
   "HBEF Mycorrhizal Data",   
   
-  # Skeleton for tab panels across top
   
   
-  # Home page with image gallery 
+  # Home page with image gallery. SlickROutput handles the image gallery animation. 
   tabPanel("Home",
            titlePanel("Welcome to our app!"),
-           slickROutput("slickr", width = "500px"),
-           slickROutput("captions", width = "500px")
+           slickROutput("slickr", width = "500px")
            ),
   
-  # Data page for navigation between datasets
+  
+  # Data page for navigation between datasets.
   navbarMenu("Data",
+             
+       # Subpages within the data page are seedling data, isotope data and anion data. 
+       # Each subpage should have its own graphs. 
        tabPanel("Seedling Data",
                 tabPanel("Seedling Plot", "seedling"),
                 
                 sidebarLayout(
                   sidebarPanel(
-                    selectInput(inputId = "VarX",
+                    selectInput(inputId = "seedlingVarX",
                                 label = "Select X-axis Variable:",
                                 choices = list("MT",
                                                "Species",
                                                "Treatment",
                                                "Slash",
                                                "Soil")),
-                    selectInput(inputId = "VarY",
+                    selectInput(inputId = "seedlingVarY",
                                 label = "Select Y-axis Variable:",
                                 choices = list("survival",
                                                "HT.cm",
@@ -60,34 +65,77 @@ ui <- navbarPage(
                 )
           
                 ),
-       tabPanel("Isotope Data", "isotope"),
+       
+       tabPanel("Soil Data",
+                sidebarLayout(
+                  sidebarPanel(
+                    selectInput(inputId = "soilVarX",
+                                label = "Select X-axis Variable:",
+                                choices = list("MT",
+                                               "Treatment",
+                                               "pH",
+                                               "per.C",
+                                               "per.N")),
+                    selectInput(inputId = "soilVarY",
+                                label = "Select Y-axis Variable:",
+                                choices = list("Root.wt.g",
+                                               "Bulk.density")),
+                    radioButtons("rb", "Choose Display:",
+                                 choiceNames = list("violin plot",
+                                                    "bar plot",
+                                                    "box plot",
+                                                    "Scatter Plot"),
+                                 choiceValues =list("violin",
+                                                    "bar",
+                                                    "box",
+                                                    "scatter")
+                    ),
+                  ),
+                  mainPanel(
+                    plotOutput("soilplot")
+                  )
+                )
+                  
+                  
+                ),
        tabPanel("Anion Data", "four-c")),
   
-  # Tree info page, navbar menu for selection between species
+  # Tree info page, navbar menu for selection between the species catalog and planting recommendations section. 
   navbarMenu("Tree Information",
+             
+           # Tree catalog subpage that will show fast facts about each species. 
            tabPanel("Tree Catalog",
                     tabsetPanel(id="species",
-                                tabPanel("oak", "one"),
-                                tabPanel("maple", "two"),
-                                tabPanel("cherry", "three")
+                                tabPanel("oak",
+                                         plotOutput("oakimage")),
+                                tabPanel("maple",
+                                         plotOutput("mapleimage")),
+                                tabPanel("cherry",
+                                         plotOutput("cherryimage"))
                       
                     )
            ),
+           
+           # Planting recommendations subpage that will customize planting options based on input. 
            tabPanel("Planting Recommendations"
            )
   ),
 )
 
 server <- function(input, output, session) {
+  
+  # This output handles the image gallery on the homepage. 
   output$slickr <- renderSlickR({
     imgs <- list.files("C:/Users/17865/OneDrive/Desktop/Senior Year Spring/EDS Capstone/S23-EDS-Fungi/images", pattern=".jpg", full.names = TRUE)
     slickR(imgs) + settings(dots = TRUE, autoplay = TRUE, autoplaySpeed = 2500)
    
   })
+  
+  # This plot output handles the seedling visualizations using if-statements to customize how it is displayed. 
   output$seedlingplot <- renderPlot({
     
     if (input$rb == "violin") {
-      dataset <- seedling_dat[ ,c(input$VarX,input$VarY)]
+      dataset <- seedling_dat[ ,c(input$seedlingVarX,input$seedlingVarY)]
       ggplot(data = dataset, aes(x = dataset[,1], y = dataset[,2], fill = dataset[,1]))+
         geom_violin()+
         theme_minimal()+
@@ -96,7 +144,7 @@ server <- function(input, output, session) {
         scale_fill_manual(values = cbPalette)
     }
     else if (input$rb == "bar") {
-      dataset <- seedling_dat[ ,c(input$VarX,input$VarY)]
+      dataset <- seedling_dat[ ,c(input$seedlingVarX,input$seedlingVarY)]
       ggplot(data = dataset, aes(x = dataset[,1], y = dataset[,2], fill = dataset[,1]))+
         geom_bar(stat = "identity")+
         theme_minimal()+
@@ -105,7 +153,7 @@ server <- function(input, output, session) {
         scale_fill_manual(values = cbPalette)
     }
     else if (input$rb == "box") {
-      dataset <- seedling_dat[ ,c(input$VarX,input$VarY)]
+      dataset <- seedling_dat[ ,c(input$seedlingVarX,input$seedlingVarY)]
       ggplot(data = dataset, aes(x = dataset[,1], y = dataset[,2], fill = dataset[,1]))+
         geom_boxplot()+
         theme_minimal()+
@@ -114,10 +162,73 @@ server <- function(input, output, session) {
         scale_fill_manual(values = cbPalette)
     }
   },height = 600,width = 800)
+
+  
+  output$soilplot <- renderPlot({
+    if (input$rb == "violin") {
+      dataset <- soil_dat[ ,c(input$soilVarX,input$soilVarY)]
+      ggplot(data = soil_dat, aes(x = dataset[,1], y = dataset[,2], fill = dataset[,1]))+
+        geom_violin()+
+        theme_minimal()+
+        xlab(input$VarX)+
+        ylab(input$VarY)+
+        scale_fill_manual(values = cbPalette)
+    }
+    else if (input$rb == "bar") {
+      dataset <- soil_dat[ ,c(input$soilVarX,input$soilVarY)]
+      ggplot(data = dataset, aes(x = dataset[,1], y = dataset[,2], fill = dataset[,1]))+
+        geom_bar(stat = "identity")+
+        theme_minimal()+
+        xlab(input$VarX)+
+        ylab(input$VarY)+
+        scale_fill_manual(values = cbPalette)
+    }
+    else if (input$rb == "box") {
+      dataset <- soil_dat[ ,c(input$soilVarX,input$soilVarY)]
+      ggplot(data = dataset, aes(x = dataset[,1], y = dataset[,2], fill = dataset[,1]))+
+        geom_boxplot()+
+        theme_minimal()+
+        xlab(input$VarX)+
+        ylab(input$VarY)+
+        scale_fill_manual(values = cbPalette)
+    }
+    else if (input$rb == "scatter") {
+      dataset <- soil_dat[ ,c(input$soilVarX,input$soilVarY)]
+      ggplot(data = dataset, aes(x = dataset[,1], y = dataset[,2]))+
+        geom_point()+
+        theme_minimal()+
+        xlab(input$VarX)+
+        ylab(input$VarY)
+    }
+  },height = 400,width = 600)
+  
+    
+  
+  # Oak tree image rendering in the tree catalog
+  output$oakimage <- renderImage({
+    filename <- normalizePath(file.path('C:/Users/17865/OneDrive/Desktop/Senior Year Spring/EDS Capstone/S23-EDS-Fungi/trees',
+                                        paste('oak', input$n, '.jpg', sep='')))
+    list(src = filename)
+  }, deleteFile = FALSE)
   
   
-  output$species <- renderText("this is an oak")
+  # Maple tree image rendering in the tree catalog
+  output$mapleimage <- renderImage({
+    filename <- normalizePath(file.path('C:/Users/17865/OneDrive/Desktop/Senior Year Spring/EDS Capstone/S23-EDS-Fungi/trees',
+                                        paste('maple', input$n, '.jpg', sep='')))
+    list(src = filename)
+  }, deleteFile = FALSE)
   
+  
+  # Cherry tree image rendering in the tree catalog
+  output$cherryimage <- renderImage({
+    filename <- normalizePath(file.path('C:/Users/17865/OneDrive/Desktop/Senior Year Spring/EDS Capstone/S23-EDS-Fungi/trees',
+                                        paste('cherry', input$n, '.jpg', sep='')))
+    list(src = filename)
+  }, deleteFile = FALSE)
+
+
+
   
 }
 
