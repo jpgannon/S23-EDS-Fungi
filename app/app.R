@@ -1,12 +1,18 @@
-# library(shiny)
-# library(slickR)
-# library(ggplot2)
-# 
+library(shiny)
+library(slickR)
+library(ggplot2)
+library(shinyWidgets)
+library(bslib)
+#install.packages("thorn")
+library(thorn)
+
+# #
 # seedling_dat <- read.csv("./files/Corinth_seedling_data.csv")
 # soil_dat <- read.csv("./files/Soil_data.csv")
 # isotope_dat <- read.csv("./files/Datasheet_2021.isotopes.csv")
 # nitrate_phosphite_dat <- read.csv("./files/Anion_NO3_PO4_soilnutrients.csv")
 # ammonium_dat <- read.csv("./files/Cation_NH4_soilnutrients.csv")
+# catalog <- read.csv("./Catalog/Catalog.csv")
 
 cbPalette <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
 
@@ -18,15 +24,21 @@ ui <- navbarPage(
   
   # Changing the theme to minimalist black-on-white appearance
   theme = bslib::bs_theme(bootswatch = "lux"),
-  "HBEF Mycorrhizal Data",   
+  "HBEF Mycorrhizal Data",
+  setBackgroundColor(
+    color = c("#FFFFFF","#FEFEFE","#C64600", "#861F41"),
+    gradient = "linear",
+    direction = "bottom"
+  ),
   
   
   
   # Home page with image gallery. SlickROutput handles the image gallery animation. 
   tabPanel("Home",
            titlePanel("Welcome to our app!"),
-           slickROutput("slickr", width = "500px")
-           ),
+           slickROutput("slickr", width = "370px")
+           )
+  ,
   
   
   # Data page for navigation between datasets.
@@ -34,8 +46,10 @@ ui <- navbarPage(
              
        # Subpages within the data page are seedling data, isotope data and anion data. 
        # Each subpage should have its own graphs. 
+       
+       # Seedling subpage will have graphs for all seedling datasets
        tabPanel("Seedling Data",
-                tabPanel("Seedling Plot", "seedling"),
+                tabPanel("Seedling Plot",),
                 
                 sidebarLayout(
                   sidebarPanel(
@@ -95,10 +109,36 @@ ui <- navbarPage(
                     plotOutput("soilplot")
                   )
                 )
-                  
-                  
                 ),
-       tabPanel("Anion Data", "four-c")),
+       
+       tabPanel("Isotope Data",
+                sidebarLayout(
+                  sidebarPanel(
+                    selectInput(inputId = "isoVarX",
+                                label = "Select X-axis Variable:",
+                                choices = list("Species.Myc.Type",
+                                               "Species",
+                                               "Position")),
+                    selectInput(inputId = "isoVarY",
+                                label = "Select Y-axis Variable:",
+                                choices = list("corrected.percent.C",
+                                               "corrected.percent.N")),
+                    radioButtons("rb", "Choose Display:",
+                                 choiceNames = list("violin plot",
+                                                    "bar plot",
+                                                    "box plot"),
+                                 choiceValues =list("violin",
+                                                    "bar",
+                                                    "box")
+                    ),
+                  ),
+                  
+                  mainPanel(
+                    plotOutput("IsoPlot")
+                  )
+                )
+                )
+       ),
   
   # Tree info page, navbar menu for selection between the species catalog and planting recommendations section. 
   navbarMenu("Tree Information",
@@ -106,12 +146,18 @@ ui <- navbarPage(
            # Tree catalog subpage that will show fast facts about each species. 
            tabPanel("Tree Catalog",
                     tabsetPanel(id="species",
-                                tabPanel("oak",
-                                         plotOutput("oakimage")),
-                                tabPanel("maple",
+                                tabPanel("Northern Red Oak",
+                                         textOutput("speciesname"),
+                                         imageOutput("oak")),
+                                tabPanel("Red Maple",
                                          plotOutput("mapleimage")),
-                                tabPanel("cherry",
-                                         plotOutput("cherryimage"))
+                                tabPanel("Sugar Maple"),
+                                tabPanel("Sweet Cherry",
+                                         plotOutput("cherryimage")),
+                                tabPanel("Blackgum"),
+                                tabPanel("Sweet Birch"),
+                                tabPanel("American Basswood"),
+                                tabPanel("Bitternut Hickory")
                       
                     )
            ),
@@ -119,8 +165,9 @@ ui <- navbarPage(
            # Planting recommendations subpage that will customize planting options based on input. 
            tabPanel("Planting Recommendations"
            )
-  ),
+  )
 )
+
 
 server <- function(input, output, session) {
   
@@ -202,7 +249,36 @@ server <- function(input, output, session) {
     }
   },height = 400,width = 600)
   
+  output$IsoPlot <- renderPlot({
     
+    if (input$rb == "violin") {
+      dataset <- isotope_dat[ ,c(input$isoVarX,input$isoVarY)]
+      ggplot(data = dataset, aes(x = dataset[,1], y = dataset[,2], fill = dataset[,1]))+
+        geom_violin()+
+        theme_minimal()+
+        xlab(input$VarX)+
+        ylab(input$VarY)+
+        scale_fill_manual(values = cbPalette)
+    }
+    else if (input$rb == "bar") {
+      dataset <- isotope_dat[ ,c(input$isoVarX,input$isoVarY)]
+      ggplot(data = dataset, aes(x = dataset[,1], y = dataset[,2], fill = dataset[,1]))+
+        geom_bar(stat = "identity")+
+        theme_minimal()+
+        xlab(input$VarX)+
+        ylab(input$VarY)+
+        scale_fill_manual(values = cbPalette)
+    }
+    else if (input$rb == "box") {
+      dataset <- isotope_dat[ ,c(input$isoVarX,input$isoVarY)]
+      ggplot(data = dataset, aes(x = dataset[,1], y = dataset[,2], fill = dataset[,1]))+
+        geom_boxplot()+
+        theme_minimal()+
+        xlab(input$VarX)+
+        ylab(input$VarY)+
+        scale_fill_manual(values = cbPalette)
+    }
+  },height = 400,width = 600)
   
   # Oak tree image rendering in the tree catalog
   output$oakimage <- renderImage({
@@ -226,9 +302,10 @@ server <- function(input, output, session) {
                                         paste('cherry', input$n, '.jpg', sep='')))
     list(src = filename)
   }, deleteFile = FALSE)
-
-
-
+  
+  # Reactive Expression to generatre information for the tree catalog based on the species tab
+  output$speciesname <- renderText(string())
+  string <- reactive(paste0("The ", input$species, " is native to different parts of Vermont"))
   
 }
 
