@@ -1,22 +1,18 @@
-library(shiny)
-library(slickR)
-library(ggplot2)
-library(shinyWidgets)
-library(bslib)
-#install.packages("thorn")
-library(thorn)
-
+# library(shiny)
+# library(slickR)
+# library(ggplot2)
+# library(bslib)
+# 
 # #
-# seedling_dat <- read.csv("./files/Corinth_seedling_data.csv")
-# soil_dat <- read.csv("./files/Soil_data.csv")
-# isotope_dat <- read.csv("./files/Datasheet_2021.isotopes.csv")
-# nitrate_phosphite_dat <- read.csv("./files/Anion_NO3_PO4_soilnutrients.csv")
-# ammonium_dat <- read.csv("./files/Cation_NH4_soilnutrients.csv")
-# catalog <- read.csv("./Catalog/Catalog.csv")
+# finalgrowth <- read.csv("files/eva/Final.DataTable.growth.v.15N.csv")
+# fullgrowth <- read.csv("files/eva/FINALfulltable.growth.csv")
+# fullmoisture <- read.csv("files/eva/FINALfulltable.moisture.csv")
+# fullsurvival <- read.csv("files/eva/FINALfulltable.survival.csv")
+
 
 cbPalette <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
 
-seedling_dat$Slash <- factor(seedling_dat$Slash)
+# seedling_dat$Slash <- factor(seedling_dat$Slash)
 
 # Using navbar page to structure the overall app. This will categorize the app into 
 # distinct sections: Home page, data page, tree information page. 
@@ -25,18 +21,21 @@ ui <- navbarPage(
   # Changing the theme to minimalist black-on-white appearance
   theme = bslib::bs_theme(bootswatch = "lux"),
   "HBEF Mycorrhizal Data",
-  setBackgroundColor(
-    color = c("#FFFFFF","#FEFEFE","#C64600", "#861F41"),
-    gradient = "linear",
-    direction = "bottom"
-  ),
-  
-  
+  includeCSS("www/style.css"),
   
   # Home page with image gallery. SlickROutput handles the image gallery animation. 
   tabPanel("Home",
-           titlePanel("Welcome to our app!"),
-           slickROutput("slickr", width = "370px")
+
+           tags$div(class='sections',id='sections',
+                    tags$h2(class = "test", "Welcome."),
+           ),
+           tags$div(class="gallery", id="gallery",
+                    tags$img(src = "2.jpg", width = "500px", height = "375px"),
+                    tags$img(src = "1.jpg", width = "500px", height = "375px"),
+                    tags$img(src = "4.jpg", width = "500px", height = "375px"),
+                    # tags$img(src = "4.jpg", width = "400px", height = "400px")
+           ),
+           # tags$h1(class = "intro", "This is a collaborative project between Virginia Tech CNRE and the Ecology, Evolution, Ecosystems and Society Program at Dartmouth College"),
            )
   ,
   
@@ -145,21 +144,6 @@ ui <- navbarPage(
              
            # Tree catalog subpage that will show fast facts about each species. 
            tabPanel("Tree Catalog",
-                    tabsetPanel(id="species",
-                                tabPanel("Northern Red Oak",
-                                         textOutput("speciesname"),
-                                         imageOutput("oak")),
-                                tabPanel("Red Maple",
-                                         plotOutput("mapleimage")),
-                                tabPanel("Sugar Maple"),
-                                tabPanel("Sweet Cherry",
-                                         plotOutput("cherryimage")),
-                                tabPanel("Blackgum"),
-                                tabPanel("Sweet Birch"),
-                                tabPanel("American Basswood"),
-                                tabPanel("Bitternut Hickory")
-                      
-                    )
            ),
            
            # Planting recommendations subpage that will customize planting options based on input. 
@@ -173,7 +157,7 @@ server <- function(input, output, session) {
   
   # This output handles the image gallery on the homepage. 
   output$slickr <- renderSlickR({
-    imgs <- list.files("C:/Users/17865/OneDrive/Desktop/Senior Year Spring/EDS Capstone/S23-EDS-Fungi/images", pattern=".jpg", full.names = TRUE)
+    imgs <- list.files("C:/Users/17865/OneDrive/Desktop/Senior Year Spring/EDS Capstone/S23-EDS-Fungi/photos/resized", pattern=".jpg", full.names = TRUE)
     slickR(imgs) + settings(dots = TRUE, autoplay = TRUE, autoplaySpeed = 2500)
    
   })
@@ -303,10 +287,17 @@ server <- function(input, output, session) {
     list(src = filename)
   }, deleteFile = FALSE)
   
-  # Reactive Expression to generatre information for the tree catalog based on the species tab
-  output$speciesname <- renderText(string())
+  # Reactive Expression to generate information for the tree catalog based on the species tab
+  output$speciesdesc <- renderText(string())
   string <- reactive(paste0("The ", input$species, " is native to different parts of Vermont"))
   
+  
+  description <- reactive({
+    filter(catalog,
+           name == catalog$CommonName,
+           assoc == catalog$MycorrhizalAssociation,
+           status == catalog$Status)
+  })
 }
 
 
