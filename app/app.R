@@ -9,7 +9,8 @@ finalsurv_dat <- read.csv("https://raw.githubusercontent.com/jpgannon/S23-EDS-Fu
 finalmstr_dat <- read.csv("https://raw.githubusercontent.com/jpgannon/S23-EDS-Fungi/main/files/FINALfulltable.moisture.csv")
 tagid <- read.csv("https://raw.githubusercontent.com/jpgannon/S23-EDS-Fungi/main/files/eva/tagID_byprox.csv")
 
-# Merging data & renaming columns
+
+# Merging data & renaming columns for 3D rendering
 merge3d <- merge(finalmstr_dat, finalsurv_dat)
 finalmerge3d <- merge(merge3d, fullgrowth)
 finalmerge3d <- finalmerge3d %>% 
@@ -17,11 +18,11 @@ finalmerge3d <- finalmerge3d %>%
                             myc.species.type == "EcM" ~ "Ectomycorrhiza"))
 
 
-
+# Merge for Rasheed's plots
 merge_dat1 <- merge(finalgrowth_dat,finalsurv_dat)
 
 merge_dat2 <- merge(merge_dat1, finalmstr_dat)
-# seedling_dat$Slash <- factor(seedling_dat$Slash)
+
 
 # Using navbar page to structure the overall app. This will categorize the app into 
 # distinct sections: Home page, data page, tree information page. 
