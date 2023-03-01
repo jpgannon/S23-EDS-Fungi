@@ -1,51 +1,65 @@
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap');
 
+/* body with gradient background*/
 body{
   min-height: 100%; 
-  width:100%;
-  background-size: cover; 
-  position: absolute; 
-  background: linear-gradient(to bottom left, #F7FBFF, #F7FBFF,silver) fixed;/*
-  background-image: url(https://64.media.tumblr.com/341276c09d2acd8631adcc749362fc52/5d2c79847ceed11c-1d/s400x600/0f76998d82b1e8eb5670df7397a3ae6fcfb54833.gif);*/
+  width: 100vw;
+  position: fixed; 
+  background: linear-gradient(to bottom, #F7FBFF, #F7FBFF,#F7FBFF,lightblue, gray) fixed;
 }
+
+/* default navbar */
 navbar-default {
-  background-color: inherit;
+  background-color: white;
   border: none;
 }
-/* Change header text to imported font */
+
+/* Change h1 elements to imported font */
+h1 {
+  font-family: 'Open Sans', sans-serif;
+  text-decoration: none;
+}
+
+/* Change h2 elements to imported font */
 h2 {
   font-family: 'Open Sans', sans-serif;
+  font-size: 16px;
 }
 
-/* Make text visible on inputs */
-.gallery{
-  padding-left:150px;
-  padding-top: 20px;
-  animation: fadeIn 3s;
+/* Change h3 elements to imported font */
+h3 {
+  font-family: 'Open Sans', sans-serif;
+  font-size: 14pt;
+  text-align: center;
 }
 
-@keyframes fadeIn {
-  0% { opacity: 0; }
-  100% { opacity: 1; }
+
+/* Container for holding entire image gallery */
+.container{
+  width: 100%;
+  padding-bottom: 50px;
+  animation: fadeIn 4s;
 }
-img {
-  
+
+/* Landing page image with rounded borders and grayscale filter */
+#landingimg {
+  padding-left: 10px;
+  padding-left: 10px;
   transition: all .99s;
   filter: grayscale(100%);
-  border-radius: 15px;
+  border-radius: 3%;
 }
-img:hover {
+
+/* Hover effect to remove grayscale filter and scale images to 102.5% */
+#landingimg:hover {
   filter: grayscale(0%);
   transform: scale(1.025);
 }
-.sections {
-  display: grid;
-  align-content: center;
-}
-.test{
-  vertical-align: text-top;
-  background-image: url(https://64.media.tumblr.com/341276c09d2acd8631adcc749362fc52/5d2c79847ceed11c-1d/s400x600/0f76998d82b1e8eb5670df7397a3ae6fcfb54833.gif);
 
+/* Greeting text with animated background*/
+.greeting{
+  vertical-align: text-top;
+  background-image: url(https://64.media.tumblr.com/8f174c60a60e1dbc52f8ddb4ebf47e42/953a007324f420a5-af/s400x600/5cb8d10cfd200debdd813037650d3971dcc35c05.gif);
   text-transform: none;
   background-size: auto auto;
   background-clip: border-box;
@@ -54,9 +68,15 @@ img:hover {
   text-fill-color: transparent;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: textclip 10s radial infinite;
   font-size: 150px;
   text-align:left;
   animation: fadeIn 3s;
   padding-bottom: 0px;
 }
+
+/* Fade-in animation for gallery and welcome text */
+@keyframes fadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
