@@ -3,11 +3,11 @@ library(dplyr)
 
 # Reading in datasets
 cbPalette <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
-finalgrowth_dat <- read.csv("https://raw.githubusercontent.com/jpgannon/S23-EDS-Fungi/main/files/Final.DataTable.growth.v.15N.csv")
-fullgrowth <- read.csv("https://raw.githubusercontent.com/jpgannon/S23-EDS-Fungi/main/files/eva/FINALfulltable.growth.csv")
-finalsurv_dat <- read.csv("https://raw.githubusercontent.com/jpgannon/S23-EDS-Fungi/main/files/FINALfulltable.survival.csv")
-finalmstr_dat <- read.csv("https://raw.githubusercontent.com/jpgannon/S23-EDS-Fungi/main/files/FINALfulltable.moisture.csv")
-tagid <- read.csv("https://raw.githubusercontent.com/jpgannon/S23-EDS-Fungi/main/files/eva/tagID_byprox.csv")
+# finalgrowth_dat <- read.csv("app/www/files/Final.DataTable.growth.v.15N.csv")
+# fullgrowth <- read.csv("app/www/files/FINALfulltable.growth.csv")
+# finalsurv_dat <- read.csv("app/www/files/FINALfulltable.survival.csv")
+# finalmstr_dat <- read.csv("app/www/files/FINALfulltable.moisture.csv")
+# tagid <- read.csv("app/www/files/tagID_byprox.csv")
 
 
 # Merging data & renaming columns for 3D rendering
@@ -256,23 +256,7 @@ server <- function(input, output, session) {
     surf <- plot_ly(z = ~as.matrix(a))
     surf <- surf %>% add_surface()
   })
-  
-  
-  # Oak tree image rendering in the tree catalog
-  output$nroleaf <- renderImage({
-    filename <- normalizePath(file.path('tree/nroleaf', '.jpg', sep=''))
-    list(src = filename)
-  }, deleteFile = FALSE)
-  
-  output$nro <- renderImage({
-    filename <- normalizePath(file.path('tree/nro', '.jpg', sep=''))
-    list(src = filename)
-  }, deleteFile = FALSE)
-  
 
-  
-  # Reactive Expression to generate information for the tree catalog based on the species tab
-  
 }
 
 
