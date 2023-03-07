@@ -2,7 +2,7 @@ library(plotly)
 library(dplyr)
 
 # Reading in datasets
-cbPalette <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+# cbPalette <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
 # finalgrowth_dat <- read.csv("app/www/files/Final.DataTable.growth.v.15N.csv")
 # fullgrowth <- read.csv("app/www/files/FINALfulltable.growth.csv")
 # finalsurv_dat <- read.csv("app/www/files/FINALfulltable.survival.csv")
@@ -45,9 +45,9 @@ ui <- navbarPage(
            
            # Container for holding the image gallery
            tags$div(class="container",
-                    tags$img(id="landingimg",src = "images/2.jpg", width = "400px", height = "350px"),
-                    tags$img(id="landingimg",src = "images/1.jpg", width = "400px", height = "350px"),
-                    tags$img(id="landingimg",src = "images/4.jpg", width = "400px", height = "350px")),
+                    tags$img(id="landingimg",src = "images/2.jpg", width = "375px", height = "350px"),
+                    tags$img(id="landingimg",src = "images/4.jpg", width = "375px", height = "350px"),
+                    tags$img(id="landingimg",src = "images/1.jpg", width = "375px", height = "350px")),
            tags$h3(id='landingfooter',"This is a collaborative project between the College of Natural Resources and Environment at Virginia Tech and the Ecology, Evolution, Ecosystems and Society Program and Dartmouth College.")
            
            ),
@@ -252,7 +252,7 @@ server <- function(input, output, session) {
   output$moistureplot <- renderPlotly({
     #Surface plot
     a <- finalmerge3d %>% 
-      select(c(Unit, Plot, Moisture))
+      select(c(Unit, Plot, REALGrowth))
     surf <- plot_ly(z = ~as.matrix(a))
     surf <- surf %>% add_surface()
   })
