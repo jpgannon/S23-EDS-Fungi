@@ -5,7 +5,7 @@ body{
   min-height: 100%; 
   width: 100vw;
   position: fixed; 
-  background: linear-gradient(to bottom, #F7FBFF, #F7FBFF,#F7FBFF,lightblue, gray) fixed;
+  background: linear-gradient(to bottom, #F7FBFF, #F7FBFF,#F7FBFF,lightgray,lightblue) fixed;
 }
 
 /* default navbar */
@@ -35,19 +35,24 @@ h3 {
 
 
 /* Container for holding entire image gallery */
-.container{
-  width: 100%;
-  padding-bottom: 50px;
+.gallery{
+  gap: 10px;
+  display: flex;
+  z-index: 1;
+  place-content: center;
+  padding-top: 70px;
+  padding-bottom: 70px;
   animation: fadeIn 4s;
 }
 
 /* Landing page image with rounded borders and grayscale filter */
-#landingimg {
-  padding-left: 10px;
-  padding-left: 10px;
-  transition: all .99s;
-  filter: grayscale(100%);
+.gallery img {
+  height: 19rem;
+  padding: .5rem;
+  transition: all 1s;
   border-radius: 3%;
+  border: .25rem solid #ddd;
+  filter: grayscale(100%);
 }
 
 /* Hover effect to remove grayscale filter and scale images to 102.5% */
@@ -79,4 +84,17 @@ h3 {
   0% { opacity: 0; }
   100% { opacity: 1; }
 }
+
+
+/* Landing page image with rounded borders and grayscale filter */
+.ai {
+  height: 20em;
+  width: 20em;
+  padding: .5rem;
+  transition: all 1s;
+  border-radius: 3%;
+  border: .25rem solid #ddd;
+}
+
+
 
