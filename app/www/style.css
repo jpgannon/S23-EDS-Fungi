@@ -2,10 +2,9 @@
 
 /* body with gradient background*/
 body{
-  min-height: 100%; 
-  width: 100vw;
-  position: fixed; 
   background: linear-gradient(to bottom, #F7FBFF, #F7FBFF,#F7FBFF,lightgray,lightblue) fixed;
+  padding-left: 2em;
+  padding-right: 2em;
 }
 
 /* default navbar */
@@ -23,7 +22,8 @@ h1 {
 /* Change h2 elements to imported font */
 h2 {
   font-family: 'Open Sans', sans-serif;
-  font-size: 16px;
+  font-size: 1.6em;
+  text-decoration:;
 }
 
 /* Change h3 elements to imported font */
@@ -32,15 +32,16 @@ h3 {
   font-size: 14pt;
   text-align: center;
 }
-
-
+section {
+  padding-bottom: 6em;
+}
 /* Container for holding entire image gallery */
 .gallery{
-  gap: 10px;
+  gap: 2em;
   display: flex;
   z-index: 1;
   place-content: center;
-  padding-top: 70px;
+  padding-top: 2em;
   padding-bottom: 70px;
   animation: fadeIn 4s;
 }
@@ -48,17 +49,16 @@ h3 {
 /* Landing page image with rounded borders and grayscale filter */
 .gallery img {
   height: 19rem;
-  padding: .5rem;
+  padding: .25rem;
   transition: all 1s;
   border-radius: 3%;
   border: .25rem solid #ddd;
-  filter: grayscale(100%);
 }
 
 /* Hover effect to remove grayscale filter and scale images to 102.5% */
-#landingimg:hover {
+img:hover {
   filter: grayscale(0%);
-  transform: scale(1.025);
+  transform: scale(1.05);
 }
 
 /* Greeting text with animated background*/
@@ -68,17 +68,41 @@ h3 {
   text-transform: none;
   background-size: auto auto;
   background-clip: border-box;
-  background-size: 200% auto;
+  background-size: 250% auto;
   background-clip: text;
   text-fill-color: transparent;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  font-size: 150px;
-  text-align:left;
+  font-size: 9em;
+  text-align:center;
   animation: fadeIn 3s;
-  padding-bottom: 0px;
+  padding-bottom: .1em;
 }
 
+.blurb{
+  width: 45vw;
+  float: left;
+}
+
+.map{
+  float: right;
+  padding-right: 5em;
+  padding-bottom: 2em;
+  transition: all 1s;
+}
+
+.map img{
+  height: 25em;
+  transition: all 1s;
+  border-radius: 3%;
+  border: .25rem solid #ddd;
+}
+
+figcaption{
+  padding-top: 1em;
+  padding-left: 3em;
+  font-size: 1.2em;
+}
 /* Fade-in animation for gallery and welcome text */
 @keyframes fadeIn {
   0% { opacity: 0; }

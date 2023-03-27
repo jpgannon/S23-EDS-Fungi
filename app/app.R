@@ -2,7 +2,7 @@ library(plotly)
 library(dplyr)
 
 # Reading in datasets
- cbPalette <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7", "#669919", "#001600")
+# cbPalette <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7", "#669919", "#001600")
 # finalgrowth_dat <- read.csv("app/www/files/Final.DataTable.growth.v.15N.csv")
 # fullgrowth <- read.csv("app/www/files/FINALfulltable.growth.csv")
 # finalsurv_dat <- read.csv("app/www/files/FINALfulltable.survival.csv")
@@ -40,20 +40,46 @@ ui <- navbarPage(
   
   # Home page with image gallery.
   tabPanel("Home",
-           
-           # Animated welcome text, background gif found in /styles.css
-           tags$div(class='sections',id='sections',
-                    tags$h2(class = "greeting", "Let's talk trees."),
+           tags$section(
+           tags$h1(class='greeting', "Let's Talk Trees."),
+           tags$div(class="gallery", id="gallery",
+                    tags$img(src = "images/2.JPG", height = "16em"),
+                    tags$img(src = "images/1.jpg", height = "16em"),
+                    tags$img(src = "images/7.JPG", height = "16em"),
            ),
+           tags$h2('This is a collaborative project between the College of 
+                  Natural Resources and Environment at Virginia Tech and the Ecology, 
+                  Evolution, Ecosystems and Society Program and Dartmouth College.'),
+           tags$br(),tags$br()),
            
-           # Container for holding the image gallery
-           tags$div(class="gallery",
-                    tags$img(id="landingimg",src = "images/2.jpg"),
-                    tags$img(id="landingimg",src = "images/1.jpg"),
-                    tags$img(id="landingimg",src = "images/4.jpg")),
-           tags$h3(id='landingfooter',"This is a collaborative project between the College of Natural Resources and Environment at Virginia Tech and the Ecology, Evolution, Ecosystems and Society Program and Dartmouth College.")
+           tags$section(
+           tags$h1(class='greeting','About the Project'),
+           tags$h2(class='blurb', "As Virginia Tech undergraduates majoring in Environmental Data Science,
+                   our team was tasked with creating an R-Shiny app of effective data analysis for our
+                   capstone project. Our group worked with scientists at Dartmouth College to investigate 
+                   how post-logging legacy mycorrhizal fungi can affect seedling regeneration. The app 
+                   data was collected at Clement Woodlot in Corinth, Vermont. The study itself was 
+                   conducted under the Adaptive Silviculture for Climate Change Project, led by
+                   Anthony D'Amato Ph.D."),
+           tags$figure(class="map",
+             tags$img(src = "images/6.jpg", height = "16em"),
+             tags$figcaption("Forest ecology researchers at a site in Corinth, Vermont"),
+             tags$br(),tags$br()
+           )),
            
-           ),
+           tags$section(
+           tags$h1(class='greeting', style='padding-top: 2em', 'Context/Design'),
+           tags$h2(class='blurb', "Throughout natural history, trees and mycorrhizal fungi have coevolved
+                   in a symbiotic relationship. Trees provide mycorrhizae with photosynthesized sugars, which in
+                   turn assist trees in uptake of nutrients like nitrogen and phosphorous. For project setup, sixteen
+                   quarter-acre plots in Corinth were harvested in the winter of 2020-2021. Of these sixteen plots, 
+                   half are dominated by Ectomycorrhizal associated (EcM Legacy) trees, while the other half
+                   are dominated by by Arbuscular mycorrhizal associated (AM Legacy) trees."),
+           tags$figure(class="map",
+                       tags$img(src = "images/8.jpg", width='550em'),
+                       tags$figcaption("Schematic of project design")
+           ))),
+           
   
   # Data page for navigation between datasets.
   navbarMenu("Data",
@@ -136,9 +162,6 @@ ui <- navbarPage(
        
        # Real growth 3d scatterplot, ideally would represent a top-down view of the experimental area
        tabPanel("3D Real Growth",
-                tags$h1("Real growth visualized in a 3D scatterplot"),
-                plotlyOutput("threedplot", height = "600px", width = "1750px"),
-                tags$p("")
                 
                 
        )),
@@ -153,57 +176,57 @@ ui <- navbarPage(
                         id = "species",
                         tabPanel("Northern Red Oak",
                                  tags$h1("Northern Red Oak - Quercus Rubra"),
-                                 tags$img(class = "ai", src = "ai/nroleaf.webp"),
-                                 tags$img(class = "ai", src = "ai/nro.webp"),
+                                 tags$img(class = "ai", src = "images/ai/nroleaf.webp"),
+                                 tags$img(class = "ai", src = "images/ai/nro.webp"),
                                  tags$h2("Mycorrhizal association: Ectomycorrhiza"),
                                  tags$h2("Geographic Range: Eastern United States and Southeastern Canada"),
                                  tags$h2("Status: prominent in Vermont")),
                         tabPanel("Red Maple",
                                  tags$h1("Red Maple - Acer Rubrum"),
-                                 tags$img(class = "ai", src = "ai/rmleaf.webp"),
-                                 tags$img(class = "ai", src = "ai/rm.webp"),
+                                 tags$img(class = "ai", src = "images/ai/rmleaf.webp"),
+                                 tags$img(class = "ai", src = "images/ai/rm.webp"),
                                  tags$h2("Mycorrhizal association: Arbuscular mycorrhiza"),
                                  tags$h2("Geographic Range: Maine west to Minnesota, south to Texas, east to Florida"),
                                  tags$h2("Status: prominent in Vermont")),
                         tabPanel("Sugar Maple",
                                  tags$h1("Sugar Maple - Acer Saccharum"),
-                                 tags$img(class = "ai", src = "ai/smleaf.webp"),
-                                 tags$img(class = "ai", src = "ai/sm.webp"),
+                                 tags$img(class = "ai", src = "images/ai/smleaf.webp"),
+                                 tags$img(class = "ai", src = "images/ai/sm.webp"),
                                  tags$h2("Mycorrhizal association: Arbuscular mycorrhiza"),
                                  tags$h2("Geographic Range: New England & Mid-Atlantic"),
                                  tags$h2("Status: declining in Vermont")),
                         tabPanel("Sweet Cherry",
                                  tags$h1("Sweet Cherry - Prunus Avium"),
-                                 tags$img(class = "ai", src = "ai/scleaf.webp"),
-                                 tags$img(class = "ai", src = "ai/sc.webp"),
+                                 tags$img(class = "ai", src = "images/ai/scleaf.webp"),
+                                 tags$img(class = "ai", src = "images/ai/sc.webp"),
                                  tags$h2("Mycorrhizal association: Arbuscular mycorrhiza"),
                                  tags$h2("Geographic Range: Coastal regions of North America"),
                                  tags$h2("Status: potentially expanding in Vermont")),
                         tabPanel("Blackgum",
                                  tags$h1("Blackgum - Nyssa Sylvatica"),
-                                 tags$img(class = "ai", src = "ai/bgleaf.webp"),
-                                 tags$img(class = "ai", src = "ai/bg.webp"),
+                                 tags$img(class = "ai", src = "images/ai/bgleaf.webp"),
+                                 tags$img(class = "ai", src = "images/ai/bg.webp"),
                                  tags$h2("Mycorrhizal association: Arbuscular mycorrhiza"),
                                  tags$h2("Geographic Range: Southwestern Maine to Central Florida"),
                                  tags$h2("Status: potential for range expansion in Vermont")),
                         tabPanel("Sweet Birch",
                                  tags$h1("Sweet Birch - Betulaceae Lenta"),
-                                 tags$img(class = "ai", src = "ai/sbleaf.webp"),
-                                 tags$img(class = "ai", src = "ai/sb.webp"),
+                                 tags$img(class = "ai", src = "images/ai/sbleaf.webp"),
+                                 tags$img(class = "ai", src = "images/ai/sb.webp"),
                                  tags$h2("Mycorrhizal association: Ectomycorrhiza"),
                                  tags$h2("Geographic Range: Northeastern United States"),
                                  tags$h2("Status: potential for range expansion in Vermont")),
                         tabPanel("American Basswood",
                                  tags$h1("American Basswood - Tilia Americana"),
-                                 tags$img(class = "ai", src = "ai/ableaf.webp"),
-                                 tags$img(class = "ai", src = "ai/bg.webp"),
+                                 tags$img(class = "ai", src = "images/ai/ableaf.webp"),
+                                 tags$img(class = "ai", src = "images/ai/bg.webp"),
                                  tags$h2("Mycorrhizal association: Arbuscular mycorrhiza"),
                                  tags$h2("Geographic Range: Eastern United States"),
                                  tags$h2("Status: potential for range expansion in Vermont")),
                         tabPanel("Bitternut Hickory",
                                  tags$h1("Bitternut Hickory - Carya Cordiformis"),
-                                 tags$img(class = "ai", src = "ai/bhleaf.webp"),
-                                 tags$img(class = "ai", src = "ai/bh.webp"),
+                                 tags$img(class = "ai", src = "images/ai/bhleaf.webp"),
+                                 tags$img(class = "ai", src = "images/ai/bh.webp"),
                                  tags$h2("Mycorrhizal association: Arbuscular mycorrhiza"),
                                  tags$h2("Geographic Range: Eastern United States"),
                                  tags$h2("Status: prominent in Vermont"))
@@ -307,14 +330,6 @@ server <- function(input, output, session) {
     
   })
   
-  # 3D scatterplot, from input. Need to include event generative text panels for clicking, dragging, etc.
-  output$threedplot <- renderPlotly({
-    plot_ly(finalmerge3d, x = ~Unit, y = ~Plot, z = ~REALGrowth, color =~ mycspeciesrenamed) %>% 
-      layout(plot_bgcolor = "#e5ecf6", 
-             xaxis = list(title = 'Unit Number', yaxis = list(title = 'Plot Number'),
-                          zaxis = list(title = 'Real Growth (cm)'),
-                          legend = list(title=list(text='<b> Mycorrhizal Species Association </b>'))))
-  })
 
 }
 
