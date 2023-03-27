@@ -91,6 +91,16 @@ ui <- navbarPage(
                 
                 sidebarLayout(
                   sidebarPanel(
+                    radioButtons("rb", "Choose Display:",
+                                 choiceNames = list("violin plot",
+                                                    "bar plot",
+                                                    "box plot",
+                                                    "Scatter plot"),
+                                 choiceValues =list("violin",
+                                                    "bar",
+                                                    "box",
+                                                    "scatter")
+                    ),
                     selectInput(inputId = "mergeVarX",
                                 label = "Select X-axis Variable:",
                                 choices = list("Species",
@@ -102,33 +112,20 @@ ui <- navbarPage(
                                 choices = list("Survival",
                                                "REALGrowth",
                                                "Moisture",
-                                               "N15.corrected")),
-                    radioButtons("rb", "Choose Display:",
-                                 choiceNames = list("violin plot",
-                                                    "bar plot",
-                                                    "box plot",
-                                                    "Scatter plot"),
-                                 choiceValues =list("violin",
-                                                    "bar",
-                                                    "box",
-                                                    "scatter")
-                    ),
+                                               "N15.corrected"))
                   ),
                   
                   mainPanel(
-                    plotOutput("MergedPlot", width = "1750px")
+                    plotOutput("MergedPlot", width = "60em"),
+                    tags$br(),
+                    tags$br(),
+                    textOutput("test")
                   )
-                ),
-                tags$br(),
-                tags$br(),
-                tags$p("Select between different variables for the X and Y axes. The data incorporated in the graphs contain information 
-                       about seedling, survival, growth, moisture, soil, and isotope data. Consists of numeric and categorical data with 
-                       key characteristics including tree proximity, unit number, plot number, tree species, tag ID, and treatment.")
-                ),
+                )),
        
        # Real growth 3d surface plot, ideally would represent a top-down view of the experimental area
        tabPanel("Line Range Plot",
-                titlePanel("Linerange Plot"),
+                titlePanel("Choose your plot with the options below."),
                 
                 sidebarLayout(
                   sidebarPanel(
@@ -150,20 +147,18 @@ ui <- navbarPage(
                   ),
                   
                   mainPanel(
-                    plotOutput("linerangeplot")
+                    plotOutput("linerangeplot", width = "60em")
                   )
-                ),
-                tags$br(),
-                tags$br(),
-                tags$p("Select between different variables for the X and Y axes. The data provides an indication of how different species fare in
-                       different locations. Choose between a variety of factors in visualizing species growth percent change or survival.")
+                )
                 
        ),
        
        # Real growth 3d scatterplot, ideally would represent a top-down view of the experimental area
-       tabPanel("3D Real Growth",
-                
-                
+       tabPanel("Growth Plotted by Association",
+                titlePanel("Real Growth by Mycorrhizal Association Type"),
+                mainPanel(
+                  plotOutput("growthplot", width = "60em")
+                )
        )),
   
   # Tree info page, navbar menu for selection between the species catalog and planting recommendations section. 
@@ -297,6 +292,31 @@ server <- function(input, output, session) {
     }
   },height = 400,width = 600)
   
+  
+  output$test <- renderText(
+    if (input$rb == "violin") {
+      'Violin plots display data distribution of variables, with more 
+      prevalent values appearing wider in each figure. Recommended for 
+      numerical data only'
+    }
+    else if (input$rb == "bar") {
+      'This bar plot represents averages for the selected variables. 
+      Recommended for both binary and numerical data.'
+    }
+    else if (input$rb == "box") {
+      'Box plots display data distribution. The Line in the center 
+      of the box represents the mean value, the upper line represents 
+      the upper quantile, the lower line represents the lower quantile, 
+      and the dots represent outliers within the data. Recommended for 
+      numerical data only'
+    }
+    else if (input$rb == "scatter") {
+      'Scatter displays a point for each data value along the Y-axis for 
+      variables selected. Recommended for numerical data only'
+    }
+  )
+  
+  
   # Line Range Plot
   output$linerangeplot <- renderPlot({
     dataset <- merge_dat4[ ,c(input$VarX,input$VarY)]
@@ -330,6 +350,17 @@ server <- function(input, output, session) {
     
   })
   
+  
+  output$growthplot <- renderPlot({
+    
+    dataset <- merge_dat4
+    ggplot(data = dataset, aes(x = merge_dat4$myc.species.type, y = merge_dat4$REALGrowth))+
+      geom_bar(stat = "identity")+
+      theme_minimal()+
+      xlab("Mycorrhizal Association Type")+
+      ylab("Real Growth")
+    
+  }, height = 400,width = 600)
 
 }
 
