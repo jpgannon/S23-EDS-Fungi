@@ -16,7 +16,7 @@ finalmerge3d <- merge(merge3d, fullgrowth)
 finalmerge3d <- finalmerge3d %>% 
   mutate(mycspeciesrenamed = case_when( myc.species.type == "AM" ~ "Arbuscular Mycorrhiza",
                             myc.species.type == "EcM" ~ "Ectomycorrhiza"))
-
+test <- "this is a test. hopefully you can see the text"
 
 # Merge for Rasheed's plots
 merge_dat1 <- merge(finalgrowth_dat,finalsurv_dat)
@@ -54,7 +54,7 @@ ui <- navbarPage(
            
            tags$section(
            tags$h1(class='greeting','About the Project'),
-           tags$h2(class='blurb', "As Virginia Tech undergraduates majoring in Environmental Data Science,
+           tags$h3(class='blurb', "As Virginia Tech undergraduates majoring in Environmental Data Science,
                    our team was tasked with creating an R-Shiny app of effective data analysis for our
                    capstone project. Our group worked with scientists at Dartmouth College to investigate 
                    how post-logging legacy mycorrhizal fungi can affect seedling regeneration. The app 
@@ -63,22 +63,27 @@ ui <- navbarPage(
                    Anthony D'Amato Ph.D."),
            tags$figure(class="map",
              tags$img(src = "images/6.jpg", height = "16em"),
-             tags$figcaption("Forest ecology researchers at a site in Corinth, Vermont"),
+             tags$figcaption("Figure 1. Forest ecology researchers at a site in Corinth, Vermont"),
              tags$br(),tags$br()
            )),
            
            tags$section(
-           tags$h1(class='greeting', style='padding-top: 2em', 'Context/Design'),
-           tags$h2(class='blurb', "Throughout natural history, trees and mycorrhizal fungi have coevolved
-                   in a symbiotic relationship. Trees provide mycorrhizae with photosynthesized sugars, which in
-                   turn assist trees in uptake of nutrients like nitrogen and phosphorous. For project setup, sixteen
-                   quarter-acre plots in Corinth were harvested in the winter of 2020-2021. Of these sixteen plots, 
-                   half are dominated by Ectomycorrhizal associated (EcM Legacy) trees, while the other half
-                   are dominated by by Arbuscular mycorrhizal associated (AM Legacy) trees."),
-           tags$figure(class="map",
-                       tags$img(src = "images/8.jpg", width='550em'),
-                       tags$figcaption("Schematic of project design")
-           ))),
+             tags$h1(class='greeting','Context & Design'),
+             tags$h3(class='blurb', "Throughout natural history, trees and mycorrhizal fungi have coevolved
+                    in a symbiotic relationship. Trees provide mycorrhizae with photosynthesized sugars, which in
+                    turn assist trees in uptake of nutrients like nitrogen and phosphorous. For project setup, eight
+                    quarter-acre plots in Corinth, VT were harvested in the winter of 2020-2021. Of these eight plots, 
+                    half are dominated by Ectomycorrhizal associated (EcM-Legacy) trees, while the other half
+                    are dominated by by Arbuscular mycorrhizal associated (AM-Legacy) trees. Within these recently logged
+                    plots, 20 seedlings of eight different species were planted. To quantify seedling survival and growth
+                    between the EcM-Legacy and AM-Legacy plots, several factors were measured. Navigate to the data tab to 
+                    see multiple data visualizations methods of these factors. "),
+             tags$figure(class="map",
+                         tags$img(src = "images/9.JPG", height = "16em"),
+                         tags$figcaption("Figure 2. Schematic of project design within greater Vermont area."),
+                         tags$br(),tags$br()
+             ))
+           ),
            
   
   # Data page for navigation between datasets.
@@ -86,7 +91,7 @@ ui <- navbarPage(
              
        
        # Merged dataset subpage will have graphs for all seedling datasets
-       tabPanel("Merged Data",
+       tabPanel("Customizable Data Visualization",
                 titlePanel("Create your plot with the options below"),
                 
                 sidebarLayout(
@@ -116,10 +121,9 @@ ui <- navbarPage(
                   ),
                   
                   mainPanel(
-                    plotOutput("MergedPlot", width = "60em"),
-                    tags$br(),
-                    tags$br(),
-                    textOutput("test")
+                    plotOutput("MergedPlot"),
+                    tags$br(),tags$br(),tags$br(),tags$br(),tags$br(),tags$br(),
+                    tags$h3(textOutput("test")),
                   )
                 )),
        
@@ -129,7 +133,7 @@ ui <- navbarPage(
                 
                 sidebarLayout(
                   sidebarPanel(
-                    selectInput(inputId = "VarX",
+                    selectInput(inputId = "rangeVarX",
                                 label = "Select X-axis Variable:",
                                 choices = list("Species" = "Species.x",
                                                "Legacy Plot Position" = "leg_pos",
@@ -139,7 +143,7 @@ ui <- navbarPage(
                                                "Legacy associtation" = "myc.legacy.type"),
                                 selected = "Species"),
                     
-                    selectInput(inputId = "VarY",
+                    selectInput(inputId = "rangeVarY",
                                 label = "Select Y-axis Variable:",
                                 choices = list("Survival rate" = "Survival",
                                                "Growth Percent Change" = "PCG"),
@@ -147,104 +151,127 @@ ui <- navbarPage(
                   ),
                   
                   mainPanel(
-                    plotOutput("linerangeplot", width = "60em")
+                    plotOutput("linerangeplot"),
+                    tags$br(),tags$br(),tags$br(),
+                    h3("The line range plot shows the mean value and standard deviation for each selected variable.
+                       For each line range, the central dot represents the X-variable mean, while the lines on either
+                       side indicate the standard deviation from mean.")
                   )
                 )
                 
        ),
        
-       # Real growth 3d scatterplot, ideally would represent a top-down view of the experimental area
-       tabPanel("Growth Plotted by Association",
-                titlePanel("Real Growth by Mycorrhizal Association Type"),
-                mainPanel(
-                  plotOutput("growthplot", width = "60em")
-                )
-       )),
-  
-  # Tree info page, navbar menu for selection between the species catalog and planting recommendations section. 
-  navbarMenu("Tree Information",
-             
-           # Tree catalog subpage that will show fast facts about each species. 
-           tabPanel("Tree Catalog",
-                    titlePanel("Learn information about different species"),
-                      tabsetPanel(
-                        id = "species",
-                        tabPanel("Northern Red Oak",
-                                 tags$h1("Northern Red Oak - Quercus Rubra"),
-                                 tags$img(class = "ai", src = "images/ai/nroleaf.webp"),
-                                 tags$img(class = "ai", src = "images/ai/nro.webp"),
-                                 tags$h2("Mycorrhizal association: Ectomycorrhiza"),
-                                 tags$h2("Geographic Range: Eastern United States and Southeastern Canada"),
-                                 tags$h2("Status: prominent in Vermont")),
-                        tabPanel("Red Maple",
-                                 tags$h1("Red Maple - Acer Rubrum"),
-                                 tags$img(class = "ai", src = "images/ai/rmleaf.webp"),
-                                 tags$img(class = "ai", src = "images/ai/rm.webp"),
-                                 tags$h2("Mycorrhizal association: Arbuscular mycorrhiza"),
-                                 tags$h2("Geographic Range: Maine west to Minnesota, south to Texas, east to Florida"),
-                                 tags$h2("Status: prominent in Vermont")),
-                        tabPanel("Sugar Maple",
-                                 tags$h1("Sugar Maple - Acer Saccharum"),
-                                 tags$img(class = "ai", src = "images/ai/smleaf.webp"),
-                                 tags$img(class = "ai", src = "images/ai/sm.webp"),
-                                 tags$h2("Mycorrhizal association: Arbuscular mycorrhiza"),
-                                 tags$h2("Geographic Range: New England & Mid-Atlantic"),
-                                 tags$h2("Status: declining in Vermont")),
-                        tabPanel("Sweet Cherry",
-                                 tags$h1("Sweet Cherry - Prunus Avium"),
-                                 tags$img(class = "ai", src = "images/ai/scleaf.webp"),
-                                 tags$img(class = "ai", src = "images/ai/sc.webp"),
-                                 tags$h2("Mycorrhizal association: Arbuscular mycorrhiza"),
-                                 tags$h2("Geographic Range: Coastal regions of North America"),
-                                 tags$h2("Status: potentially expanding in Vermont")),
-                        tabPanel("Blackgum",
-                                 tags$h1("Blackgum - Nyssa Sylvatica"),
-                                 tags$img(class = "ai", src = "images/ai/bgleaf.webp"),
-                                 tags$img(class = "ai", src = "images/ai/bg.webp"),
-                                 tags$h2("Mycorrhizal association: Arbuscular mycorrhiza"),
-                                 tags$h2("Geographic Range: Southwestern Maine to Central Florida"),
-                                 tags$h2("Status: potential for range expansion in Vermont")),
-                        tabPanel("Sweet Birch",
-                                 tags$h1("Sweet Birch - Betulaceae Lenta"),
-                                 tags$img(class = "ai", src = "images/ai/sbleaf.webp"),
-                                 tags$img(class = "ai", src = "images/ai/sb.webp"),
-                                 tags$h2("Mycorrhizal association: Ectomycorrhiza"),
-                                 tags$h2("Geographic Range: Northeastern United States"),
-                                 tags$h2("Status: potential for range expansion in Vermont")),
-                        tabPanel("American Basswood",
-                                 tags$h1("American Basswood - Tilia Americana"),
-                                 tags$img(class = "ai", src = "images/ai/ableaf.webp"),
-                                 tags$img(class = "ai", src = "images/ai/bg.webp"),
-                                 tags$h2("Mycorrhizal association: Arbuscular mycorrhiza"),
-                                 tags$h2("Geographic Range: Eastern United States"),
-                                 tags$h2("Status: potential for range expansion in Vermont")),
-                        tabPanel("Bitternut Hickory",
-                                 tags$h1("Bitternut Hickory - Carya Cordiformis"),
-                                 tags$img(class = "ai", src = "images/ai/bhleaf.webp"),
-                                 tags$img(class = "ai", src = "images/ai/bh.webp"),
-                                 tags$h2("Mycorrhizal association: Arbuscular mycorrhiza"),
-                                 tags$h2("Geographic Range: Eastern United States"),
-                                 tags$h2("Status: prominent in Vermont"))
-                      ),
-                    tags$br(),
-                    tags$br(),
-                    tags$h3("Images featured in the tree information catalog were generated from Craiyon, an AI model image generator.")
-                    
-           ),
-           
-           # Planting recommendations subpage that will customize planting options based on input. 
-           tabPanel("Planting Recommendations",
-                    tags$h1("Let us help."),
-                    tags$p("Here, forest practicioners can enter information about their plots. Please
+       # Planting recommendations subpage that will customize planting options based on input. 
+       tabPanel("Planting Recommendations",
+                tags$h1("Let us help."),
+                tags$p("Here, forest practicioners can enter information about their plots. Please
                             input information regarding logged gap size, basal area, and soil fertility. Based
                             on your inputs, we can recommend what species to plant."),
-                    numericInput("gapsize", " Average 15N Value", value = 0, min = 0, max = 100),
-                    sliderInput("basalarea", "Basal Area (sq ft/acre)", value = 0, min = 0, max = 43560),
-                    numericInput("soilfertility", "Average Soil Fertility of Plot", value = 0, min = 0, max = 100)
-                    
-           )
+                numericInput("gapsize", " Average 15N Value", value = 0, min = 0, max = 100),
+                sliderInput("basalarea", "Basal Area (sq ft/acre)", value = 0, min = 0, max = 43560),
+                numericInput("soilfertility", "Average Soil Fertility of Plot", value = 0, min = 0, max = 100)
+                
+       )
+       ),
+  
+           # Tree catalog subpage that will show fast facts about each species. 
+       tabPanel("Tree Information Catalog",
+                titlePanel("Learn information about different species"),
+                  tabsetPanel(
+                    id = "species",
+                    tabPanel("Northern Red Oak",
+                             tags$h2("Northern Red Oak - Quercus Rubra"),
+                             tags$div(class='catalog',
+                               tags$img(class = "ai", src = "images/ai/nroleaf.webp"),
+                               tags$img(class = "ai", src = "images/ai/nromap.jpg"),
+                               tags$img(class = "ai", src = "images/ai/nro.webp"),
+                               ),
+                             tags$h2("Mycorrhizal association: Ectomycorrhiza"),
+                             tags$h2("Geographic Range: Eastern United States and Southeastern Canada"),
+                             tags$h2("Status: prominent in Vermont")
+                             ),
+                    tabPanel("Red Maple",
+                             tags$div(class='catalog',
+                               tags$h2("Red Maple - Acer Rubrum"),
+                               tags$img(class = "ai", src = "images/ai/rmleaf.webp"),
+                               tags$img(class = "ai", src = "images/ai/rmmap.jpg"),
+                               tags$img(class = "ai", src = "images/ai/rm.webp"),
+                               tags$h2("Mycorrhizal association: Arbuscular mycorrhiza"),
+                               tags$h2("Geographic Range: Maine west to Minnesota, south to Texas, east to Florida"),
+                               tags$h2("Status: prominent in Vermont")
+                               )
+                             ),
+                    tabPanel("Sugar Maple",
+                             tags$div(class='catalog',
+                               tags$h2("Sugar Maple - Acer Saccharum"),
+                               tags$img(class = "ai", src = "images/ai/smleaf.webp"),
+                               tags$img(class = "ai", src = "images/ai/smmap.jpg"),
+                               tags$img(class = "ai", src = "images/ai/sm.webp"),
+                               tags$h2("Mycorrhizal association: Arbuscular mycorrhiza"),
+                               tags$h2("Geographic Range: New England & Mid-Atlantic"),
+                               tags$h2("Status: declining in Vermont")
+                               )
+                             ),
+                    tabPanel("Sweet Cherry",
+                             tags$div(class='catalog',
+                               tags$h2("Sweet Cherry - Prunus Avium"),
+                               tags$img(class = "ai", src = "images/ai/scleaf.webp"),
+                               tags$img(class = "ai", src = "images/ai/scmap.jpg"),
+                               tags$img(class = "ai", src = "images/ai/sc.webp"),
+                               tags$h2("Mycorrhizal association: Arbuscular mycorrhiza"),
+                               tags$h2("Geographic Range: Coastal regions of North America"),
+                               tags$h2("Status: potentially expanding in Vermont")
+                               )
+                             ),
+                    tabPanel("Blackgum",
+                             tags$div(class='catalog',
+                               tags$h2("Blackgum - Nyssa Sylvatica"),
+                               tags$img(class = "ai", src = "images/ai/bgleaf.webp"),
+                               tags$img(class = "ai", src = "images/ai/bgmap.jpg"),
+                               tags$img(class = "ai", src = "images/ai/bg.webp"),
+                               tags$h2("Mycorrhizal association: Arbuscular mycorrhiza"),
+                               tags$h2("Geographic Range: Southwestern Maine to Central Florida"),
+                               tags$h2("Status: potential for range expansion in Vermont")
+                               )
+                             ),
+                    tabPanel("Sweet Birch",
+                             tags$div(class='catalog',
+                               tags$h2("Sweet Birch - Betulaceae Lenta"),
+                               tags$img(class = "ai", src = "images/ai/sbleaf.webp"),
+                               tags$img(class = "ai", src = "images/ai/sbmap.jpg"),
+                               tags$img(class = "ai", src = "images/ai/sb.webp"),
+                               tags$h2("Mycorrhizal association: Ectomycorrhiza"),
+                               tags$h2("Geographic Range: Northeastern United States"),
+                               tags$h2("Status: potential for range expansion in Vermont")
+                               )
+                             ),
+                    tabPanel("American Basswood",
+                             tags$div(class='catalog',
+                               tags$h2("American Basswood - Tilia Americana"),
+                               tags$img(class = "ai", src = "images/ai/ableaf.webp"),
+                               tags$img(class = "ai", src = "images/ai/abmap.jpg"),
+                               tags$img(class = "ai", src = "images/ai/bg.webp"),
+                               tags$h2("Mycorrhizal association: Arbuscular mycorrhiza"),
+                               tags$h2("Geographic Range: Eastern United States"),
+                               tags$h2("Status: potential for range expansion in Vermont")
+                               )
+                             ),
+                    tabPanel("Bitternut Hickory",
+                             tags$div(class='catalog',
+                               tags$h2("Bitternut Hickory - Carya Cordiformis"),
+                               tags$img(class = "ai", src = "images/ai/bhleaf.webp"),
+                               tags$img(class = "ai", src = "images/ai/bhmap.jpg"),
+                               tags$img(class = "ai", src = "images/ai/bh.webp"),
+                               tags$h2("Mycorrhizal association: Arbuscular mycorrhiza"),
+                               tags$h2("Geographic Range: Eastern United States"),
+                               tags$h2("Status: prominent in Vermont"))
+                    )
+                  ),
+                tags$h5("Images featured in the tree information catalog were generated from Craiyon, an AI model image generator.
+                        Species range maps were obtained from Virginia Tech's Dendrology course online syllabus.")
+                
+         )
   )
-)
 
 
 
@@ -260,8 +287,8 @@ server <- function(input, output, session) {
       ggplot(data = dataset, aes(x = dataset[,1], y = dataset[,2], fill = dataset[,1]))+
         geom_violin()+
         theme_minimal()+
-        xlab(input$VarX)+
-        ylab(input$VarY)+
+        xlab(input$mergeVarX)+
+        ylab(input$mergeVarY)+
         scale_fill_manual(values = cbPalette)
     }
     else if (input$rb == "bar") {
@@ -269,8 +296,8 @@ server <- function(input, output, session) {
       ggplot(data = dataset, aes(x = dataset[,1], y = dataset[,2],fill = dataset[,1]))+
         geom_bar(stat = "summary", position = "dodge", fun = "mean")+
         theme_minimal()+
-        xlab(input$VarX)+
-        ylab(input$VarY)+
+        xlab(input$mergeVarX)+
+        ylab(input$mergeVarY)+
         scale_fill_manual(values = cbPalette)
     }
     else if (input$rb == "box") {
@@ -278,8 +305,8 @@ server <- function(input, output, session) {
       ggplot(data = dataset, aes(x = dataset[,1], y = dataset[,2], fill = dataset[,1]))+
         geom_boxplot()+
         theme_minimal()+
-        xlab(input$VarX)+
-        ylab(input$VarY)+
+        xlab(input$mergeVarX)+
+        ylab(input$mergeVarY)+
         scale_fill_manual(values = cbPalette)
     }
     else if (input$rb == "scatter") {
@@ -287,17 +314,17 @@ server <- function(input, output, session) {
       ggplot(data = dataset, aes(x = dataset[,1], y = dataset[,2]))+
         geom_point()+
         theme_minimal()+
-        xlab(input$VarX)+
-        ylab(input$VarY)
+        xlab(input$mergeVarX)+
+        ylab(input$mergeVarY)
     }
-  },height = 400,width = 600)
+  },height = 550,width = 750)
   
   
   output$test <- renderText(
     if (input$rb == "violin") {
       'Violin plots display data distribution of variables, with more 
       prevalent values appearing wider in each figure. Recommended for 
-      numerical data only'
+      numerical data only.'
     }
     else if (input$rb == "bar") {
       'This bar plot represents averages for the selected variables. 
@@ -308,18 +335,18 @@ server <- function(input, output, session) {
       of the box represents the mean value, the upper line represents 
       the upper quantile, the lower line represents the lower quantile, 
       and the dots represent outliers within the data. Recommended for 
-      numerical data only'
+      numerical data only.'
     }
     else if (input$rb == "scatter") {
       'Scatter displays a point for each data value along the Y-axis for 
-      variables selected. Recommended for numerical data only'
+      variables selected. Recommended for numerical data only.'
     }
   )
   
   
   # Line Range Plot
   output$linerangeplot <- renderPlot({
-    dataset <- merge_dat4[ ,c(input$VarX,input$VarY)]
+    dataset <- merge_dat4[ ,c(input$rangeVarX,input$rangeVarY)]
     data_sums <- aggregate(dataset[,2] ~ dataset[,1],data = dataset, summary)
     stanD <- aggregate(dataset[,2] ~ dataset[,1],data = dataset, sd)
     sums2 <- as.data.frame(data_sums[,2])
@@ -346,7 +373,7 @@ server <- function(input, output, session) {
                                                  size = 3.5))+
       scale_color_manual(values = cbPalette)+
       theme_minimal()+
-      labs(x = input$VarX, y = input$VarY)
+      labs(x = input$rangeVarX, y = input$rangeVarY)
     
   })
   
@@ -360,7 +387,7 @@ server <- function(input, output, session) {
       xlab("Mycorrhizal Association Type")+
       ylab("Real Growth")
     
-  }, height = 400,width = 600)
+  }, height = 550, width = 750)
 
 }
 

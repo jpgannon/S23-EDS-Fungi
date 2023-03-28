@@ -23,16 +23,21 @@ h1 {
 h2 {
   font-family: 'Open Sans', sans-serif;
   font-size: 1.6em;
-  text-decoration:;
 }
 
 /* Change h3 elements to imported font */
 h3 {
   font-family: 'Open Sans', sans-serif;
-  font-size: 14pt;
+  font-size: 1.4em;
+  text-align: left;
+  text-transform: none;
+}
+
+h5 {
   text-align: center;
 }
 section {
+  height: 95vh;
   padding-bottom: 6em;
 }
 /* Container for holding entire image gallery */
@@ -56,7 +61,7 @@ section {
 }
 
 /* Hover effect to remove grayscale filter and scale images to 102.5% */
-img:hover {
+section img:hover {
   filter: grayscale(0%);
   transform: scale(1.05);
 }
@@ -82,11 +87,11 @@ img:hover {
 .blurb{
   width: 45vw;
   float: left;
+  padding-left: 2em;
 }
 
 .map{
   float: right;
-  padding-right: 5em;
   padding-bottom: 2em;
   transition: all 1s;
 }
@@ -100,25 +105,30 @@ img:hover {
 
 figcaption{
   padding-top: 1em;
-  padding-left: 3em;
   font-size: 1.2em;
 }
-/* Fade-in animation for gallery and welcome text */
-@keyframes fadeIn {
-  0% { opacity: 0; }
-  100% { opacity: 1; }
+
+.catalog{
+  width: 95vw;
 }
 
-
-/* Landing page image with rounded borders and grayscale filter */
-.ai {
+.catalog img {
   height: 20em;
   width: 20em;
   padding: .5rem;
   transition: all 1s;
   border-radius: 3%;
   border: .25rem solid #ddd;
+  float:center;
+}
+.catalog img:hover {
+  filter: grayscale(0%);
+  transform: scale(1.05);
 }
 
 
-
+/* Fade-in animation for gallery and welcome text */
+@keyframes fadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
