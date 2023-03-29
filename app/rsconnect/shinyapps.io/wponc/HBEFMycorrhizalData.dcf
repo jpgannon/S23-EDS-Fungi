@@ -1,11 +1,13 @@
 name: HBEFMycorrhizalData
-title:
+title: HBEFMycorrhizalData
 username:
 account: wponc
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
-appId: 8601730
-bundleId: 6974150
+appId: 8708769
+bundleId: 7023703
 url: https://wponc.shinyapps.io/HBEFMycorrhizalData/
-when: 1679106792.04408
-lastSyncTime: 1679106792.0441
+when: 1680100024.03178
+lastSyncTime: 1680100024.03179
+asMultiple: FALSE
+asStatic: FALSE

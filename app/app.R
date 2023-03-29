@@ -1,31 +1,22 @@
 library(plotly)
 library(dplyr)
+library(rsconnect)
+
 
 # Reading in datasets
-# cbPalette <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7", "#669919", "#001600")
-# finalgrowth_dat <- read.csv("app/www/files/Final.DataTable.growth.v.15N.csv")
-# fullgrowth <- read.csv("app/www/files/FINALfulltable.growth.csv")
-# finalsurv_dat <- read.csv("app/www/files/FINALfulltable.survival.csv")
-# finalmstr_dat <- read.csv("app/www/files/FINALfulltable.moisture.csv")
-# tagid <- read.csv("app/www/files/tagID_byprox.csv")
-
-
-# Merging data & renaming columns for 3D rendering
-merge3d <- merge(finalmstr_dat, finalsurv_dat)
-finalmerge3d <- merge(merge3d, fullgrowth)
-finalmerge3d <- finalmerge3d %>% 
-  mutate(mycspeciesrenamed = case_when( myc.species.type == "AM" ~ "Arbuscular Mycorrhiza",
-                            myc.species.type == "EcM" ~ "Ectomycorrhiza"))
-test <- "this is a test. hopefully you can see the text"
+cbPalette <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7", "#669919", "#001600")
+finalgrowth_dat <- read.csv("www/files/Final.DataTable.growth.v.15N.csv")
+finalgrowth <- read.csv("www/files/Final.DataTable.growth.v.15N.csv")
+finalsurv_dat <- read.csv("www/files/FINALfulltable.survival.csv")
+finalmstr_dat <- read.csv("www/files/FINALfulltable.moisture.csv")
+tagid <- read.csv("www/files/tagID_byprox.csv")
 
 # Merge for Rasheed's plots
 merge_dat1 <- merge(finalgrowth_dat,finalsurv_dat)
-
 merge_dat2 <- merge(merge_dat1, finalmstr_dat)
-
-merge_dat4 <- read.csv("https://raw.githubusercontent.com/jpgannon/S23-EDS-Fungi/main/myc_mergeDat.csv")
-
+merge_dat4 <- read.csv("https://raw.githubusercontent.com/jpgannon/S23-EDS-Fungi/main/Merged_data4.csv")
 merge_dat4$Slash <- as.character(merge_dat4$Slash)
+
 
 # Using navbar page to structure the overall app. This will categorize the app into 
 # distinct sections: Home page, data page, tree information page. 
@@ -38,20 +29,24 @@ ui <- navbarPage(
   # CSS sheet for styling text, images, etc
   includeCSS("www/style.css"),
   
-  # Home page with image gallery.
+  # Home page with image gallery, project context, experiment setup. 
   tabPanel("Home",
+           
+           # Main landing gallery with welcome text. 
            tags$section(
            tags$h1(class='greeting', "Let's Talk Trees."),
            tags$div(class="gallery", id="gallery",
-                    tags$img(src = "images/2.JPG", height = "16em"),
-                    tags$img(src = "images/1.jpg", height = "16em"),
-                    tags$img(src = "images/7.JPG", height = "16em"),
+                    tags$img(src = "images/2.webp", height = "16em"),
+                    tags$img(src = "images/1.webp", height = "16em"),
+                    tags$img(src = "images/7.webp", height = "16em"),
            ),
            tags$h2('This is a collaborative project between the College of 
                   Natural Resources and Environment at Virginia Tech and the Ecology, 
                   Evolution, Ecosystems and Society Program and Dartmouth College.'),
            tags$br(),tags$br()),
            
+           
+           # Blurb about project context, image from previous article on Corinth, VT research. 
            tags$section(
            tags$h1(class='greeting','About the Project'),
            tags$h3(class='blurb', "As Virginia Tech undergraduates majoring in Environmental Data Science,
@@ -62,11 +57,13 @@ ui <- navbarPage(
                    conducted under the Adaptive Silviculture for Climate Change Project, led by
                    Anthony D'Amato Ph.D."),
            tags$figure(class="map",
-             tags$img(src = "images/6.jpg", height = "16em"),
+             tags$img(src = "images/6.webp", height = "16em"),
              tags$figcaption("Figure 1. Forest ecology researchers at a site in Corinth, Vermont"),
              tags$br(),tags$br()
            )),
            
+           
+           # Blurb on project design, image included from Eva's research poster. 
            tags$section(
              tags$h1(class='greeting','Context & Design'),
              tags$h3(class='blurb', "Throughout natural history, trees and mycorrhizal fungi have coevolved
@@ -79,7 +76,7 @@ ui <- navbarPage(
                     between the EcM-Legacy and AM-Legacy plots, several factors were measured. Navigate to the data tab to 
                     see multiple data visualizations methods of these factors. "),
              tags$figure(class="map",
-                         tags$img(src = "images/9.JPG", height = "16em"),
+                         tags$img(src = "images/9.webp", height = "16em"),
                          tags$figcaption("Figure 2. Schematic of project design within greater Vermont area."),
                          tags$br(),tags$br()
              ))
@@ -127,14 +124,15 @@ ui <- navbarPage(
                   )
                 )),
        
-       # Real growth 3d surface plot, ideally would represent a top-down view of the experimental area
-       tabPanel("Line Range Plot",
-                titlePanel("Choose your plot with the options below."),
+       # Line range plot to display both mean and standard deviation of real growth and survival.
+       tabPanel("Growth & Survival Line Range",
+                
+                titlePanel("Growth & Survival Line Range"),
                 
                 sidebarLayout(
                   sidebarPanel(
                     selectInput(inputId = "rangeVarX",
-                                label = "Select X-axis Variable:",
+                                label = "Select Y-axis Variable:",
                                 choices = list("Species" = "Species.x",
                                                "Legacy Plot Position" = "leg_pos",
                                                "Mych Species Position" = "myc_pos",
@@ -144,18 +142,14 @@ ui <- navbarPage(
                                 selected = "Species"),
                     
                     selectInput(inputId = "rangeVarY",
-                                label = "Select Y-axis Variable:",
+                                label = "Select X-axis Variable:",
                                 choices = list("Survival rate" = "Survival",
                                                "Growth Percent Change" = "PCG"),
                                 selected = "Growth Percent Change")          
                   ),
                   
                   mainPanel(
-                    plotOutput("linerangeplot"),
-                    tags$br(),tags$br(),tags$br(),
-                    h3("The line range plot shows the mean value and standard deviation for each selected variable.
-                       For each line range, the central dot represents the X-variable mean, while the lines on either
-                       side indicate the standard deviation from mean.")
+                    plotOutput("rangePlot")
                   )
                 )
                 
@@ -163,18 +157,32 @@ ui <- navbarPage(
        
        # Planting recommendations subpage that will customize planting options based on input. 
        tabPanel("Planting Recommendations",
-                tags$h1("Let us help."),
-                tags$p("Here, forest practicioners can enter information about their plots. Please
-                            input information regarding logged gap size, basal area, and soil fertility. Based
-                            on your inputs, we can recommend what species to plant."),
-                numericInput("gapsize", " Average 15N Value", value = 0, min = 0, max = 100),
-                sliderInput("basalarea", "Basal Area (sq ft/acre)", value = 0, min = 0, max = 43560),
-                numericInput("soilfertility", "Average Soil Fertility of Plot", value = 0, min = 0, max = 100)
+                titlePanel("Let us help"
+                ),
+                sidebarLayout(
+                  sidebarPanel(
+                    tags$h3("Select the parameters that most accurately describe the planting area:"),
+                    selectInput("Moisture", "Soil Moisture",
+                                choices = c("Wet", "Moderate", "Dry")),
+                    selectInput("Chemistry", "Soil Chemistry", 
+                                choices = c("Acidic", "Alkaline")),
+                    selectInput("Shade", "Sunlight Patterns", 
+                                choices = c("Moderate Shade", "Minimal Shade"))
+                  ),
+                  mainPanel(
+                    tags$h1("We recommend you plant..."),
+                    uiOutput("recommendation"),
+                  )
+                ),
+                tags$br(),
+                tags$h5("Ideal tree condition information was gathered from the Virginia Tech Dendrology 
+                        Textbook, the work of Dr. John Seiler, John Peterson, and many others.")
+                
                 
        )
        ),
   
-           # Tree catalog subpage that will show fast facts about each species. 
+           # Tree catalog subpage that will show fast facts about each species, along with AI pictures and a map.
        tabPanel("Tree Information Catalog",
                 titlePanel("Learn information about different species"),
                   tabsetPanel(
@@ -183,7 +191,7 @@ ui <- navbarPage(
                              tags$h2("Northern Red Oak - Quercus Rubra"),
                              tags$div(class='catalog',
                                tags$img(class = "ai", src = "images/ai/nroleaf.webp"),
-                               tags$img(class = "ai", src = "images/ai/nromap.jpg"),
+                               tags$img(class = "ai", src = "images/ai/nromap.webp"),
                                tags$img(class = "ai", src = "images/ai/nro.webp"),
                                ),
                              tags$h2("Mycorrhizal association: Ectomycorrhiza"),
@@ -194,7 +202,7 @@ ui <- navbarPage(
                              tags$div(class='catalog',
                                tags$h2("Red Maple - Acer Rubrum"),
                                tags$img(class = "ai", src = "images/ai/rmleaf.webp"),
-                               tags$img(class = "ai", src = "images/ai/rmmap.jpg"),
+                               tags$img(class = "ai", src = "images/ai/rmmap.webp"),
                                tags$img(class = "ai", src = "images/ai/rm.webp"),
                                tags$h2("Mycorrhizal association: Arbuscular mycorrhiza"),
                                tags$h2("Geographic Range: Maine west to Minnesota, south to Texas, east to Florida"),
@@ -205,7 +213,7 @@ ui <- navbarPage(
                              tags$div(class='catalog',
                                tags$h2("Sugar Maple - Acer Saccharum"),
                                tags$img(class = "ai", src = "images/ai/smleaf.webp"),
-                               tags$img(class = "ai", src = "images/ai/smmap.jpg"),
+                               tags$img(class = "ai", src = "images/ai/smmap.webp"),
                                tags$img(class = "ai", src = "images/ai/sm.webp"),
                                tags$h2("Mycorrhizal association: Arbuscular mycorrhiza"),
                                tags$h2("Geographic Range: New England & Mid-Atlantic"),
@@ -216,7 +224,7 @@ ui <- navbarPage(
                              tags$div(class='catalog',
                                tags$h2("Sweet Cherry - Prunus Avium"),
                                tags$img(class = "ai", src = "images/ai/scleaf.webp"),
-                               tags$img(class = "ai", src = "images/ai/scmap.jpg"),
+                               tags$img(class = "ai", src = "images/ai/scmap.webp"),
                                tags$img(class = "ai", src = "images/ai/sc.webp"),
                                tags$h2("Mycorrhizal association: Arbuscular mycorrhiza"),
                                tags$h2("Geographic Range: Coastal regions of North America"),
@@ -227,7 +235,7 @@ ui <- navbarPage(
                              tags$div(class='catalog',
                                tags$h2("Blackgum - Nyssa Sylvatica"),
                                tags$img(class = "ai", src = "images/ai/bgleaf.webp"),
-                               tags$img(class = "ai", src = "images/ai/bgmap.jpg"),
+                               tags$img(class = "ai", src = "images/ai/bgmap.webp"),
                                tags$img(class = "ai", src = "images/ai/bg.webp"),
                                tags$h2("Mycorrhizal association: Arbuscular mycorrhiza"),
                                tags$h2("Geographic Range: Southwestern Maine to Central Florida"),
@@ -238,7 +246,7 @@ ui <- navbarPage(
                              tags$div(class='catalog',
                                tags$h2("Sweet Birch - Betulaceae Lenta"),
                                tags$img(class = "ai", src = "images/ai/sbleaf.webp"),
-                               tags$img(class = "ai", src = "images/ai/sbmap.jpg"),
+                               tags$img(class = "ai", src = "images/ai/sbmap.webp"),
                                tags$img(class = "ai", src = "images/ai/sb.webp"),
                                tags$h2("Mycorrhizal association: Ectomycorrhiza"),
                                tags$h2("Geographic Range: Northeastern United States"),
@@ -249,7 +257,7 @@ ui <- navbarPage(
                              tags$div(class='catalog',
                                tags$h2("American Basswood - Tilia Americana"),
                                tags$img(class = "ai", src = "images/ai/ableaf.webp"),
-                               tags$img(class = "ai", src = "images/ai/abmap.jpg"),
+                               tags$img(class = "ai", src = "images/ai/abmap.webp"),
                                tags$img(class = "ai", src = "images/ai/bg.webp"),
                                tags$h2("Mycorrhizal association: Arbuscular mycorrhiza"),
                                tags$h2("Geographic Range: Eastern United States"),
@@ -260,7 +268,7 @@ ui <- navbarPage(
                              tags$div(class='catalog',
                                tags$h2("Bitternut Hickory - Carya Cordiformis"),
                                tags$img(class = "ai", src = "images/ai/bhleaf.webp"),
-                               tags$img(class = "ai", src = "images/ai/bhmap.jpg"),
+                               tags$img(class = "ai", src = "images/ai/bhmap.webp"),
                                tags$img(class = "ai", src = "images/ai/bh.webp"),
                                tags$h2("Mycorrhizal association: Arbuscular mycorrhiza"),
                                tags$h2("Geographic Range: Eastern United States"),
@@ -269,7 +277,6 @@ ui <- navbarPage(
                   ),
                 tags$h5("Images featured in the tree information catalog were generated from Craiyon, an AI model image generator.
                         Species range maps were obtained from Virginia Tech's Dendrology course online syllabus.")
-                
          )
   )
 
@@ -279,7 +286,7 @@ ui <- navbarPage(
 server <- function(input, output, session) {
 
   
-  # This plot output handles the seedling visualizations using if-statements to customize how it is displayed. 
+  # This output handles the plotting of the merged dataset, customized based on user input
   output$MergedPlot <- renderPlot({
     
     if (input$rb == "violin") {
@@ -287,16 +294,21 @@ server <- function(input, output, session) {
       ggplot(data = dataset, aes(x = dataset[,1], y = dataset[,2], fill = dataset[,1]))+
         geom_violin()+
         theme_minimal()+
-        xlab(input$mergeVarX)+
+        xlab(element_blank())+
+        theme(legend.position = "none")+
+        theme(text = element_text(size = 20))+
         ylab(input$mergeVarY)+
-        scale_fill_manual(values = cbPalette)
+        scale_fill_manual(values = cbPalette)+
+        guides(color = guide_legend(title = "Users By guides"))
     }
     else if (input$rb == "bar") {
       dataset <- merge_dat2[ ,c(input$mergeVarX,input$mergeVarY)]
       ggplot(data = dataset, aes(x = dataset[,1], y = dataset[,2],fill = dataset[,1]))+
         geom_bar(stat = "summary", position = "dodge", fun = "mean")+
         theme_minimal()+
-        xlab(input$mergeVarX)+
+        xlab(element_blank())+
+        theme(legend.position = "none")+
+        theme(text = element_text(size = 20))+
         ylab(input$mergeVarY)+
         scale_fill_manual(values = cbPalette)
     }
@@ -305,7 +317,9 @@ server <- function(input, output, session) {
       ggplot(data = dataset, aes(x = dataset[,1], y = dataset[,2], fill = dataset[,1]))+
         geom_boxplot()+
         theme_minimal()+
-        xlab(input$mergeVarX)+
+        theme(legend.position = "none")+
+        theme(text = element_text(size = 20))+
+        xlab(element_blank())+
         ylab(input$mergeVarY)+
         scale_fill_manual(values = cbPalette)
     }
@@ -314,12 +328,16 @@ server <- function(input, output, session) {
       ggplot(data = dataset, aes(x = dataset[,1], y = dataset[,2]))+
         geom_point()+
         theme_minimal()+
-        xlab(input$mergeVarX)+
-        ylab(input$mergeVarY)
+        theme(legend.position = "none")+
+        theme(text = element_text(size = 20))+
+        xlab(element_blank())+
+        ylab(input$mergeVarY)+
+        scale_fill_manual(values = cbPalette)
     }
   },height = 550,width = 750)
   
   
+  # Dynamic description for different plotting formats of merged dataset
   output$test <- renderText(
     if (input$rb == "violin") {
       'Violin plots display data distribution of variables, with more 
@@ -344,8 +362,7 @@ server <- function(input, output, session) {
   )
   
   
-  # Line Range Plot
-  output$linerangeplot <- renderPlot({
+  output$rangePlot <- renderPlot({
     dataset <- merge_dat4[ ,c(input$rangeVarX,input$rangeVarY)]
     data_sums <- aggregate(dataset[,2] ~ dataset[,1],data = dataset, summary)
     stanD <- aggregate(dataset[,2] ~ dataset[,1],data = dataset, sd)
@@ -373,21 +390,74 @@ server <- function(input, output, session) {
                                                  size = 3.5))+
       scale_color_manual(values = cbPalette)+
       theme_minimal()+
-      labs(x = input$rangeVarX, y = input$rangeVarY)
+      theme(legend.position = "none")+
+      theme(text = element_text(size = 20))+
+      labs(x = input$rangeVarY, y = input$rangeVarX,)
     
   })
   
-  
-  output$growthplot <- renderPlot({
+  output$recommendation <- renderUI({
+    if(input$Shade == "Minimal Shade") {
+      
+      if(input$Chemistry == "Acidic"){
+        tagList(
+          tags$h3("Northern Red Oak: Ideal conditions include full sun and a soil preference of  acidic, loamy, moist, sandy, well-drained and clay soils. While the species prefers normal moisture, the tree has drought tolerance."),
+          tags$br(), tags$br(),
+          tags$img(src="images/rec/nro.jpg")
+        )
+      }
+      
+      else if(input$Chemistry == "Alkaline"){
+        tagList(
+          tags$h3("Sweet Cherry: Ideal conditions include sun with partial shade and a soil preference of well-drained soils. The pH preference depends on variety and region. "),
+          tags$br(), tags$br(),
+          tags$img(src="images/rec/sc.jpg")
+        )
+      }
+    }
     
-    dataset <- merge_dat4
-    ggplot(data = dataset, aes(x = merge_dat4$myc.species.type, y = merge_dat4$REALGrowth))+
-      geom_bar(stat = "identity")+
-      theme_minimal()+
-      xlab("Mycorrhizal Association Type")+
-      ylab("Real Growth")
+    else if(input$Shade == "Moderate Shade") {
+      
+      if(input$Chemistry == "Acidic"){
+        
+        if(input$Moisture == "Wet"){
+          tagList(
+            tags$h3("Red Maple: Ideal conditions include full sun, partial sun/shade and a soil preference of acidic, clay, loamy, moist, rich, sandy, silty loam, well drained, and wet soils. "),
+            tags$br(), tags$br(),
+            tags$img(src="images/rec/rm.jpg")
+          )
+        }
+        
+        else if(input$Moisture == "Moderate"){
+          tagList(
+            tags$h3("Sweet Birch: Ideal conditions include full sun with partial shade and a soil preference of moist, acidic, sandy, or rocky, and well-drained loams. It is typically found in 
+                  preferring north-facing slopes, moist soils, and rocky soils; however it is sensitive to compacted soil. "),
+            tags$br(), tags$br(),
+            tags$img(src="images/rec/sb.jpg")
+          )
+        }
+          
+        else if(input$Moisture == "Dry"){
+          tagList(
+            tags$h3("Blackgum: Ideal conditions include full sun with part shade and a soil preference of medium to wet, well-drained soils. The species prefers moist and acidic soils 
+                    and can tolerate poorly-drained soils, dry soils, and is drought tolerant. "),
+            tags$br(), tags$br(),
+            tags$img(src="images/rec/bg.jpg")
+          )
+        }
+        
+      }
+      else if(input$Chemistry == "Alkaline") {
+        tagList(
+          tags$h3("Sugar Maple: Ideal conditions include full sun and partial shade with a soil preference of deep, well-drained acidic to slightly alkaline soils. It prefers moist soil
+                  conditions but has moderate drought tolerance. "),
+          tags$br(), tags$br(),
+          tags$img(src='images/rec/sm.jpg')
+        )
+      }
+    }
     
-  }, height = 550, width = 750)
+  })
 
 }
 
