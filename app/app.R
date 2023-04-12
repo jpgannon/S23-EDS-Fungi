@@ -36,7 +36,15 @@ merge_dat3 <- merge_dat2 %>%
                              Species == "PRSE" ~ "Black Cherry",
                              Species == "QURU" ~ "Northern Red Oak",
                              Species == "TIAM" ~ "American Basswood"
-                                             ))
+                             )) %>%  
+  rename("N15 to N14 Ratio" = "Ratio.15N.to.14N") %>%
+  rename("Mycorrhizal Legacy Type" = "Mycorrhizal.Legacy.Type") %>%
+  rename("Mycorrhizal Species Type" = "Mycorrhizal.Species.Type") %>%
+  rename("Seedling Growth (cm)" = "Growth.cm") %>% 
+  rename("Survival Rate" = "Survival") %>% 
+  rename("Tree Species" = "Species") %>% 
+  rename("Tree Position within Plot" = "Proximity") %>% 
+  rename("Volumetric Soil Moisture" = "Moisture")
 
 merge_dat5 <- merge_dat4 %>% 
   mutate(MT = case_when(MT == "EcM" ~ "ectomycorrhiza",
@@ -52,7 +60,13 @@ merge_dat5 <- merge_dat4 %>%
                              Species.x == "PRSE" ~ "Black Cherry",
                              Species.x == "QURU" ~ "Northern Red Oak",
                              Species.x == "TIAM" ~ "American Basswood"
-  ))
+                             )) %>% 
+  rename("N15 to N14 Ratio" = "N15.corrected") %>% 
+  rename("Mycorrhizal Legacy Type" = "myc.legacy.type") %>% 
+  rename("Mycorrhizal Species Type" = "MT") %>% 
+  rename("Tree Species" = "Species.x") %>% 
+  rename("Survival Rate" = "Survival" ) %>% 
+  rename("Growth (Percent Change)" = "PCG")
 
 # Using navbar page to structure the overall app. This will categorize the app into 
 # distinct sections: Home page, data page, tree information page. 
@@ -153,18 +167,18 @@ ui <- navbarPage(
                     # Sidebar selection for choosing X variable 
                     selectInput(inputId = "mergeVarX",
                                 label = "Select X-axis Variable:",
-                                choices = list("Species",
-                                               "Mycorrhizal Species Type" = "Mycorrhizal.Species.Type",
-                                               "Mycorrhizal Legacy Type" = "Mycorrhizal.Legacy.Type",
-                                               "Proximity")),
+                                choices = list("Tree Species",
+                                               "Mycorrhizal Species Type",
+                                               "Mycorrhizal Legacy Type",
+                                               "Tree Position within Plot")),
                     
                     # Sidebar selection for choosing Y variable
                     selectInput(inputId = "mergeVarY",
                                 label = "Select Y-axis Variable:",
-                                choices = list("Survival",
-                                               "Seedling Growth (cm)" = "Growth.cm",
-                                               "Moisture",
-                                               "Ratio of 15N to 14N" = "Ratio.15N.to.14N"))
+                                choices = list("Survival Rate",
+                                               "Seedling Growth (cm)",
+                                               "Volumetric Soil Moisture",
+                                               "N15 to N14 Ratio"))
                   ),
                   
                   # Output of customizable plot, figure caption to describe the different graph types 
@@ -187,20 +201,20 @@ ui <- navbarPage(
                   sidebarPanel(
                     selectInput(inputId = "rangeVarX",
                                 label = "Select Y-axis Variable:",
-                                choices = list("Species" = "Species.x",
+                                choices = list("Tree Species",
                                                "Legacy Plot Position" = "leg_pos",
-                                               "Mycorrhiza Species Position" = "myc_pos",
+                                               "Mycorrhizal Species Position" = "myc_pos",
                                                "Slash Level" = "Slash",
-                                               "Mycorrhizal association" = "MT",
-                                               "Legacy association" = "myc.legacy.type"),
-                                selected = "Species"),
+                                               "Mycorrhizal Species Type",
+                                               "Mycorrhizal Legacy Type"),
+                                selected = "Tree Species"),
                     
                     # Sidebar input for Y variable selection
                     selectInput(inputId = "rangeVarY",
                                 label = "Select X-axis Variable:",
-                                choices = list("Survival rate" = "Survival",
-                                               "Growth Percent Change" = "PCG"),
-                                selected = "Growth Percent Change")          
+                                choices = list("Survival Rate",
+                                               "Growth (Percent Change)"),
+                                selected = "Growth (Percent Change)")          
                   ),
                   
                   # Output of line range plot as designed by user input
@@ -333,7 +347,7 @@ ui <- navbarPage(
                       tags$div(class='person',
                                tags$h2("Trayda Murakami"),
                                tags$img(src="images/people/trayda.jpg"),tags$br(),
-                               tags$h3("Trayda is finishing her senior year at Virginia Tech pursuing a degree in environmental data science. In her career, she hopes to build 
+                               tags$h3("Trayda is a Virginia Tech student who studied environmental data science with a minor in Leadership and Social Change. In her career, she hopes to build 
                                        interdisciplinary managerial skills in environmental consulting.")
                       )),
              tabPanel("Will Poncy",
@@ -377,19 +391,26 @@ server <- function(input, output, session) {
         theme_minimal()+
         xlab(input$mergeVarX)+
         theme(legend.position = "none")+
-        theme(text = element_text(size = 18))+
+        theme(text = element_text(size = 18.5))+
         ylab(input$mergeVarY)+
         scale_fill_manual(values = cbPalette)+
         guides(color = guide_legend(title = "Users By guides"))
     }
     else if (input$rb == "bar") {
       dataset <- merge_dat3[ ,c(input$mergeVarX,input$mergeVarY)]
-      ggplot(data = dataset, aes(x = dataset[,1], y = dataset[,2],fill = dataset[,1]))+
-        geom_bar(stat = "summary", position = "dodge", fun = "mean")+
+      
+      colnames(dataset) <- c("Name", "Value")
+      dataset <- dataset %>% 
+        group_by(Name) %>% 
+        summarise(mean = mean(Value), se = (sd(Value)/sqrt(length(Value)))/2)
+        
+      ggplot(data = dataset, aes(x = Name, y = mean,fill = Name))+
+        geom_col(aes(y=mean))+
+        geom_errorbar(aes(ymin = mean - se, ymax = mean + se),width = 0.5)+
         theme_minimal()+
         xlab(input$mergeVarX)+
         theme(legend.position = "none")+
-        theme(text = element_text(size = 18))+
+        theme(text = element_text(size = 18.5))+
         ylab(input$mergeVarY)+
         scale_fill_manual(values = cbPalette)
     }
@@ -399,7 +420,7 @@ server <- function(input, output, session) {
         geom_boxplot()+
         theme_minimal()+
         theme(legend.position = "none")+
-        theme(text = element_text(size = 18))+
+        theme(text = element_text(size = 18.5))+
         xlab(input$mergeVarX)+
         ylab(input$mergeVarY)+
         scale_fill_manual(values = cbPalette)
@@ -410,7 +431,7 @@ server <- function(input, output, session) {
         geom_point(color = "#009e73", position = "jitter")+
         theme_minimal()+
         theme(legend.position = "none")+
-        theme(text = element_text(size = 18))+
+        theme(text = element_text(size = 18.5))+
         xlab(input$mergeVarX)+
         ylab(input$mergeVarY)+
         scale_fill_manual(values = cbPalette)
