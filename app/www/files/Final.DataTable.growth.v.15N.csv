@@ -1,4 +1,4 @@
-﻿Unit,plot,Position,Species,N15.corrected,Location,ID,REALGrowth,ID2,myc.species.type,myc.legacy.type
+﻿Unit,plot,Position,Species,Ratio 15N to 14N,Location,ID,Growth cm,ID2,Mycorrhizal Species Type,Mycorrhizal Legacy Type
 10,5,Center,ACRU,2.293890203,10_5,10_5.Center.ACRU,4.932514466,10_5.ACRU,AM,AM
 10,5,Center,ACSA,2.339859795,10_5,10_5.Center.ACSA,-8.796233835,10_5.ACSA,AM,AM
 10,5,Center,BELE,2.182512317,10_5,10_5.Center.BELE,13.77050527,10_5.BELE,EcM,AM

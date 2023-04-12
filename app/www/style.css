@@ -1,5 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap');
 
+
+html {
+  scroll-behavior: smooth;
+}
+
 /* body with gradient background*/
 body{
   background: linear-gradient(to bottom, #F7FBFF, #F7FBFF,#F7FBFF,lightgray,lightblue) fixed;
@@ -51,13 +56,14 @@ section {
   animation: fadeIn 4s;
 }
 
-/* Landing page image with rounded borders and grayscale filter */
+/* Landing page image with rounded borders */
 .gallery img {
   height: 19rem;
   padding: .25rem;
   transition: all 1s;
   border-radius: 3%;
-  border: .25rem solid #ddd;
+  border: .35rem solid #ddd;
+  border-image: url(https://64.media.tumblr.com/5d7ab997c9daa879a320f9ef21e895b7/tumblr_ooeddrvOJE1uzwgsuo1_400.gif) 30;
 }
 
 /* Hover effect to remove grayscale filter and scale images to 102.5% */
@@ -83,27 +89,35 @@ section img:hover {
   animation: fadeIn 3s;
   padding-bottom: .1em;
 }
-
+.text{
+ width: 40vw;
+ float: left;
+}
 .blurb{
   width: 45vw;
   float: left;
   padding-left: 2em;
 }
 
-.map{
+.fig{
+  width: 40vw;
   float: right;
   padding-bottom: 2em;
   transition: all 1s;
 }
 
-.map img{
+.fig img{
+  place-content: center;
   height: 25em;
+  padding: .25rem;
   transition: all 1s;
   border-radius: 3%;
-  border: .25rem solid #ddd;
+  border: .35rem solid #ddd;
+  border-image: url(https://64.media.tumblr.com/5d7ab997c9daa879a320f9ef21e895b7/tumblr_ooeddrvOJE1uzwgsuo1_400.gif) 30;
 }
 
 figcaption{
+  place-content: center;
   padding-top: 1em;
   font-size: 1.2em;
 }
@@ -113,17 +127,29 @@ figcaption{
 }
 
 .catalog img {
-  height: 20em;
+  height: 22em;
   width: 20em;
+  gap: 1em;
   padding: .5rem;
   transition: all 1s;
   border-radius: 3%;
   border: .25rem solid #ddd;
-  float:center;
 }
 .catalog img:hover {
-  filter: grayscale(0%);
   transform: scale(1.05);
+}
+
+.person img {
+  height: 30em;
+  width: 30em;
+  padding: .5rem;
+  transition: all 1s;
+  border-radius: 3%;
+  border: .5rem solid #ddd;
+  border-image: url(https://64.media.tumblr.com/5d7ab997c9daa879a320f9ef21e895b7/tumblr_ooeddrvOJE1uzwgsuo1_400.gif) 30;
+}
+.person img:hover {
+  transform: scale(1.03);
 }
 
 
@@ -131,4 +157,25 @@ figcaption{
 @keyframes fadeIn {
   0% { opacity: 0; }
   100% { opacity: 1; }
+}
+
+ /* ===== Scrollbar CSS ===== */
+    /* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #b79cbf #ffffff;
+}
+
+/* Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+  width: 5px;
+}
+
+*::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: lightgray;
+  border-radius: 10px;
 }

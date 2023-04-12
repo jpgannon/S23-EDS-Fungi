@@ -1,4 +1,4 @@
-﻿Unit,Plot,Species,myc.species.type,myc.legacy.type,Num.,Tag ID,Prox,Moisture
+﻿Unit,Plot,Species,Mycorrhizal Species Type,Mycorrhizal Legacy Type,Number,Tag ID,Proximity,Moisture
 10,5,ACRU,AM,AM,1,10_5 ACRU_1,Center,20.7
 10,5,ACRU,AM,AM,2,10_5 ACRU_2,Center,27.1
 10,5,ACRU,AM,AM,4,10_5 ACRU_4,Center,29.8

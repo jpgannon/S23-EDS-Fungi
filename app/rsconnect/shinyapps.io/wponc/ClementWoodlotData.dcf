@@ -1,0 +1,13 @@
+name: ClementWoodlotData
+title: ClementWoodlotData
+username:
+account: wponc
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 8829923
+bundleId: 7079929
+url: https://wponc.shinyapps.io/ClementWoodlotData/
+when: 1681305152.10542
+lastSyncTime: 1681305152.10543
+asMultiple: FALSE
+asStatic: FALSE

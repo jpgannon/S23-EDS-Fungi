@@ -1,4 +1,4 @@
-﻿Unit,Plot,Species,myc.species. type,myc.legacy.type,Num.,Tag ID,Survival,Prox
+﻿Unit,Plot,Species,Mycorrhizal Species Type,Mycorrhizal Legacy Type,Number,Tag ID,Survival,Proximity
 10,5,ACRU,AM,AM,1,10_5 ACRU_1,1,Center
 10,5,ACRU,AM,AM,2,10_5 ACRU_2,0,Center
 10,5,ACRU,AM,AM,4,10_5 ACRU_4,1,Center
