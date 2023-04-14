@@ -2,57 +2,39 @@ library(plotly)
 library(dplyr)
 library(rsconnect)
 library(tidyverse)
-
+library(stringr)
 
 # Reading in datasets
 cbPalette <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7", "#669919", "#001600")
 finalgrowth_dat <- read.csv("www/files/Final.DataTable.growth.v.15N.csv")
-finalgrowth <- read.csv("www/files/Final.DataTable.growth.v.15N.csv")
 finalsurv_dat <- read.csv("www/files/FINALfulltable.survival.csv")
 finalmstr_dat <- read.csv("www/files/FINALfulltable.moisture.csv")
-tagid <- read.csv("www/files/tagID_byprox.csv")
+tag_id_dat<- read.csv("www/files/tagID_byprox.csv")
+seedling_dat <- read.csv("www/files/seedling.csv")
 
 
-# Merge for customizable data visualization plot
+# Merging and character substitutions 
+tag_id_dat$ID_new <- gsub('_','.',tag_id_dat$Tag.ID)
+
 merge_dat1 <- merge(finalgrowth_dat,finalsurv_dat)
+
 merge_dat2 <- merge(merge_dat1, finalmstr_dat)
-merge_dat4 <- read.csv("www/files/Merged_data4.csv")
-merge_dat4$Slash <- as.character(merge_dat4$Slash)
+merge_dat2$ID2 <- gsub('_','.',merge_dat2$Tag.ID)
+merge_dat2$ID2 <- gsub(' ','.',merge_dat2$ID2)
+merge_dat2$leg_pos <- paste(merge_dat2$myc.legacy.type, merge_dat2$Position)
 
-
+merge_dat3 <- merge(seedling_dat,merge_dat2, by ='ID2')
+merge_dat3$PCG <- (((merge_dat3$HT.cm - merge_dat3$HT.cm.initial)/merge_dat3$HT.cm.initial)*100)
+merge_dat3$Mycorrhizal.Species.Position <- paste(merge_dat3$Mycorrhizal.Species.Type, merge_dat3$Position)
+merge_dat3$Slash <- as.character(merge_dat3$Slash)
 
 # Data cleaning for further readability when plotting speies and mycorrhizae types
-merge_dat3 <- merge_dat2 %>% 
-  mutate(Mycorrhizal.Species.Type = case_when(Mycorrhizal.Species.Type == "EcM" ~ "ectomycorrhiza",
+merge_dat3 <- merge_dat3 %>% 
+  mutate(Mycorrhizal.Species.Type = case_when(Mycorrhizal.Species.Type == "EcM" ~ "Ectomycorrhiza",
                              Mycorrhizal.Species.Type == "AM" ~ "Arbuscular Mycorrhiza")) %>%
-  mutate(Mycorrhizal.Legacy.Type = case_when(Mycorrhizal.Legacy.Type == "EcM" ~ "ectomycorrhiza",
+  mutate(Mycorrhizal.Legacy.Type = case_when(Mycorrhizal.Legacy.Type == "EcM" ~ "Ectomycorrhiza",
                              Mycorrhizal.Legacy.Type == "AM" ~ "Arbuscular Mycorrhiza")) %>% 
-  mutate(Species = case_when(Species == "ACRU" ~ "Red Maple",
-                             Species == "ACRU" ~ "Red Maple",
-                             Species == "ACSA" ~ "Sugar Maple",
-                             Species == "BELE" ~ "Black Birch",
-                             Species == "CACO" ~ "Bitternut Hickory",
-                             Species == "NYSY" ~ "Blackgum",
-                             Species == "PRSE" ~ "Black Cherry",
-                             Species == "QURU" ~ "Northern Red Oak",
-                             Species == "TIAM" ~ "American Basswood"
-                             )) %>%  
-  rename("N15 to N14 Ratio" = "Ratio.15N.to.14N") %>%
-  rename("Mycorrhizal Legacy Type" = "Mycorrhizal.Legacy.Type") %>%
-  rename("Mycorrhizal Species Type" = "Mycorrhizal.Species.Type") %>%
-  rename("Seedling Growth (cm)" = "Growth.cm") %>% 
-  rename("Survival Rate" = "Survival") %>% 
-  rename("Tree Species" = "Species") %>% 
-  rename("Tree Position within Plot" = "Proximity") %>% 
-  rename("Volumetric Soil Moisture" = "Moisture")
-
-merge_dat5 <- merge_dat4 %>% 
-  mutate(MT = case_when(MT == "EcM" ~ "ectomycorrhiza",
-                                              MT == "AM" ~ "Arbuscular Mycorrhiza")) %>%
-  mutate(myc.legacy.type = case_when(myc.legacy.type == "EcM" ~ "ectomycorrhiza",
-                                     myc.legacy.type == "AM" ~ "Arbuscular Mycorrhiza")) %>% 
-  mutate(Species.x = case_when(Species.x == "ACRU" ~ "Red Maple",
-                             Species.x == "ACRU" ~ "Red Maple",
+  mutate(Species = case_when(Species.x == "ACRU" ~ "Red Maple",
                              Species.x == "ACSA" ~ "Sugar Maple",
                              Species.x == "BELE" ~ "Black Birch",
                              Species.x == "CACO" ~ "Bitternut Hickory",
@@ -61,12 +43,17 @@ merge_dat5 <- merge_dat4 %>%
                              Species.x == "QURU" ~ "Northern Red Oak",
                              Species.x == "TIAM" ~ "American Basswood"
                              )) %>% 
-  rename("N15 to N14 Ratio" = "N15.corrected") %>% 
-  rename("Mycorrhizal Legacy Type" = "myc.legacy.type") %>% 
-  rename("Mycorrhizal Species Type" = "MT") %>% 
-  rename("Tree Species" = "Species.x") %>% 
-  rename("Survival Rate" = "Survival" ) %>% 
-  rename("Growth (Percent Change)" = "PCG")
+  rename("N15 to N14 Ratio" = "Ratio.15N.to.14N") %>%
+  rename("Mycorrhizal Legacy Type" = "Mycorrhizal.Legacy.Type") %>%
+  rename("Mycorrhizal Species Type" = "Mycorrhizal.Species.Type") %>%
+  rename("Mycorrhizal Species Position" = "Mycorrhizal.Species.Position") %>%
+  rename("Seedling Growth (cm)" = "Growth.cm") %>% 
+  rename("Survival Rate" = "Survival") %>% 
+  rename("Tree Species" = "Species") %>% 
+  rename("Tree Position within Plot" = "Proximity") %>% 
+  rename("Volumetric Soil Moisture" = "Moisture") %>% 
+  rename("Growth (Percent Change)" = "PCG") %>% 
+  rename("Legacy Plot Position" = "leg_pos") 
 
 # Using navbar page to structure the overall app. This will categorize the app into 
 # distinct sections: Home page, data page, tree information page. 
@@ -185,7 +172,7 @@ ui <- navbarPage(
                   mainPanel(
                     plotOutput("MergedPlot"),
                     tags$br(),tags$br(),tags$br(),tags$br(),tags$br(),tags$br(),
-                    tags$h3(textOutput("plotdesc")),
+                    tags$h3(textOutput("mergeplotdesc")),
                   )
                 )),
        
@@ -202,8 +189,8 @@ ui <- navbarPage(
                     selectInput(inputId = "rangeVarX",
                                 label = "Select Y-axis Variable:",
                                 choices = list("Tree Species",
-                                               "Legacy Plot Position" = "leg_pos",
-                                               "Mycorrhizal Species Position" = "myc_pos",
+                                               "Legacy Plot Position",
+                                               "Mycorrhizal Species Position",
                                                "Slash Level" = "Slash",
                                                "Mycorrhizal Species Type",
                                                "Mycorrhizal Legacy Type"),
@@ -218,9 +205,9 @@ ui <- navbarPage(
                   ),
                   
                   # Output of line range plot as designed by user input
-                  mainPanel(
-                    plotOutput("rangePlot")
-                  )
+                  mainPanel(plotOutput("rangePlot"),
+                  tags$br(),tags$br(),
+                  tags$h3("For each Y-variable the central dot represents mean x-value and the lines indicate standard deviation."))
                 )
                 
        )
@@ -440,14 +427,14 @@ server <- function(input, output, session) {
   
   
   # Dynamic description for different plotting formats of merged dataset
-  output$plotdesc <- renderText(
+  output$mergeplotdesc <- renderText(
     if (input$rb == "violin") {
       'Violin plots display data distribution of variables, with more 
       prevalent values appearing wider in each figure. Recommended for 
       numerical data only.'
     }
     else if (input$rb == "bar") {
-      'This bar plot represents averages for the selected variables. 
+      'Bar plot represents averages for the selected variables, lines above individual bars represent mean standard error.
       Recommended for both binary and numerical data.'
     }
     else if (input$rb == "box") {
@@ -465,7 +452,7 @@ server <- function(input, output, session) {
   
   # Output handling rendering of line range plot
   output$rangePlot <- renderPlot({
-    dataset <- merge_dat5[ ,c(input$rangeVarX,input$rangeVarY)]
+    dataset <- merge_dat3[ ,c(input$rangeVarX,input$rangeVarY)]
     data_sums <- aggregate(dataset[,2] ~ dataset[,1],data = dataset, summary)
     stanD <- aggregate(dataset[,2] ~ dataset[,1],data = dataset, sd)
     sums2 <- as.data.frame(data_sums[,2])
