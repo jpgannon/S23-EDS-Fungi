@@ -279,7 +279,7 @@ ui <- navbarPage(
                                 tags$img(class = "catalog", src = "images/catalog/bbleaf.webp"),
                                 tags$img(class = "catalog", src = "images/catalog/bbmap.webp"),
                                 tags$img(class = "catalog", src = "images/catalog/bb.webp"),
-                                tags$h2("Mycorrhizal association: Arbuscular mycorrhiza"),
+                                tags$h2("Mycorrhizal association: Ectomycorrhiza"),
                                 tags$h2("Geographic Range: New England states and northern appalachian states"),
                          )
                        ),
@@ -289,7 +289,7 @@ ui <- navbarPage(
                                tags$img(class = "catalog", src = "images/catalog/ableaf.webp"),
                                tags$img(class = "catalog", src = "images/catalog/abmap.webp"),
                                tags$img(class = "catalog", src = "images/catalog/bg.webp"),
-                               tags$h2("Mycorrhizal association: Arbuscular mycorrhiza"),
+                               tags$h2("Mycorrhizal association: Ectomycorrhiza"),
                                tags$h2("Geographic Range: New england states, southern canada and the midwest"),
                          )
                        ),
@@ -299,7 +299,7 @@ ui <- navbarPage(
                                tags$img(class = "catalog", src = "images/catalog/bhleaf.webp"),
                                tags$img(class = "catalog", src = "images/catalog/bhmap.webp"),
                                tags$img(class = "catalog", src = "images/catalog/bh.webp"),
-                               tags$h2("Mycorrhizal association: Arbuscular mycorrhiza"),
+                               tags$h2("Mycorrhizal association: Ectomycorrhiza"),
                                tags$h2("Geographic Range: Eastern United States and midwestern United States"),
                           )
               )
