@@ -117,11 +117,11 @@ ui <- navbarPage(
                               are dominated by arbuscular mycorrhizal associated (AM-Legacy) trees. Within these recently logged
                               plots, 20 seedlings of eight different species were planted. To quantify seedling survival and growth
                               between the EcM-Legacy and AM-Legacy plots, several factors were measured. Navigate to the data tab to 
-                              see multiple data visualizations methods of these factors. ")
+                              see multiple data visualization methods of these factors. ")
              ),
              tags$div(class="fig",
-                         tags$img(src = "images/9.webp"),
-                         tags$figcaption("Figure 2. Schematic of project design within greater Vermont area."),
+                         tags$img(src = "images/3.webp"),
+                         tags$figcaption("Figure 2. View of project setup at Clement Woodlot."),
                          tags$br(),tags$br())
              
              )
@@ -318,7 +318,7 @@ ui <- navbarPage(
              tabPanel("JP Gannon, PhD",
                       tags$div(class='person',
                                tags$h2("J.P. Gannon, PhD"),
-                               tags$img(src="images/people/jp.jpg"),tags$br(),
+                               tags$img(src="images/people/jp.webp"),tags$br(),
                                tags$h3("JP Gannon is a collegiate assistant professor of environmental data science in
                                the Forest Resources and Environmental Conservation (FREC) department in the College of Natural Resources and Environment at Virginia Tech.
                                        His Research focuses on examining streamflow generation in rivers and streams at a variety of scales, and using remotely
@@ -329,29 +329,28 @@ ui <- navbarPage(
              tabPanel("Rasheed Pongnon",
                       tags$div(class='person',
                                tags$h2("Rasheed Pongnon"),
-                               tags$img(src="images/people/rasheed.jpg"),tags$br(),
-                               tags$h3("Rasheed is an environmental science major at Virginia Tech. After graduation, he plans to pursue 
-                                       a master's degree at the Virginia Institute of Marine Science.")
+                               tags$img(src="images/people/rasheed.webp"),tags$br(),
+                               tags$h3("Rasheed is a student at Virginia Tech studying environmental data science. He hopes to work to study and conserve marine and coastal environments after graduation.")
                       )),
              tabPanel("Trayda Murakami",
                       tags$div(class='person',
                                tags$h2("Trayda Murakami"),
-                               tags$img(src="images/people/trayda.jpg"),tags$br(),
+                               tags$img(src="images/people/trayda.webp"),tags$br(),
                                tags$h3("Trayda is a Virginia Tech student who studied environmental data science with a minor in Leadership and Social Change. In her career, she hopes to build 
                                        interdisciplinary managerial skills in environmental consulting.")
                       )),
              tabPanel("Will Poncy",
                       tags$div(class='person',
                                tags$h2("Will Poncy"),
-                               tags$img(src="images/people/will.jpg"),tags$br(),
-                               tags$h3("Will is a Virginia Tech environmental data science major and a FAA-licensed drone pilot. In the future, he aims to conduct graduate research at the intersection of geospatial analysis, unmanned 
-                                       aerial vehicles, and environmental science. During his free time he enjoys writing, weightlifting and experimenting with web design.")
+                               tags$img(src="images/people/will.webp"),tags$br(),
+                               tags$h3("Will is a Virginia Tech environmental data science major and a FAA-licensed remote pilot. In the future, he aims to conduct graduate research at the intersection of geospatial analysis, unmanned 
+                                       aerial vehicles, and environmental science.")
                       )),
              "Dartmouth College",
              tabPanel("Amelia Fitch",
                       tags$div(class='person',
                                tags$h2("Amelia Fitch"),
-                               tags$img(src="images/people/amelia.jpg"),tags$br(),
+                               tags$img(src="images/people/amelia.webp"),tags$br(),
                                tags$h3("Amelia is a PhD candidate in the Ecology, Evolution, Environment, and Society graduate program, working with Caitlin Hicks Pries. She earned a BS at the University of Oregon, where she 
                                        studied tidal wetlands, and MS at the University of Cambridge studying boreal lake sediments. She first became interested in soil during her contrbutions to a 
                                        estuary restoration project while working as a park ranger in Oregon. Her current work is focused on how soil microbes (and specifically these really cool fungi called mycorrhizae) affect decomposition and nutrient cycling in northeastern forests.
@@ -360,7 +359,7 @@ ui <- navbarPage(
              tabPanel("Eva Legge",
                       tags$div(class='person',
                                tags$h2("Eva Legge"),
-                               tags$img(src="images/people/eva.jpg"),tags$br(),
+                               tags$img(src="images/people/eva.webp"),tags$br(),
                                tags$h3("Eva is a senior at Dartmouth College majoring in Biology (with an Ecology concentration), and an aspiring forest ecologist working at the nexus of mycorrhizal ecology and adaptive management.
                                As a member of the Hicks Pries Soil Ecology Lab, her research examines the role arbuscular mycorrhizae may play in facilitating forest regeneration under varied levels of forest disturbance 
                                (selective harvest and quarter-acre clear cuts). Eva is also an avid science communicator, a practice inspired by her science writer grandfather. She believes good communication is necessary 
