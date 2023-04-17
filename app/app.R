@@ -320,14 +320,17 @@ ui <- navbarPage(
                                tags$h2("J.P. Gannon, PhD"),
                                tags$img(src="images/people/jp.jpg"),tags$br(),
                                tags$h3("JP Gannon is a collegiate assistant professor of environmental data science in
-                               the Forest Resources and Environmental Conservation (FREC) department in the College of Natural Resources and Environment at Virginia Tech.")
+                               the Forest Resources and Environmental Conservation (FREC) department in the College of Natural Resources and Environment at Virginia Tech.
+                                       His Research focuses on examining streamflow generation in rivers and streams at a variety of scales, and using remotely
+                                       sensed data to address environmental issues. He is passionate about teaching and involving undergraduate students in research projects, 
+                                       and enjoys mountain biking in his free time.")
                                )
                       ),
              tabPanel("Rasheed Pongnon",
                       tags$div(class='person',
                                tags$h2("Rasheed Pongnon"),
                                tags$img(src="images/people/rasheed.jpg"),tags$br(),
-                               tags$h3("Rasheed is a senior undergraduate at Virginia Tech studying environmental data science. After graduation, he plans to pursue 
+                               tags$h3("Rasheed is an environmental science major at Virginia Tech. After graduation, he plans to pursue 
                                        a master's degree at the Virginia Institute of Marine Science.")
                       )),
              tabPanel("Trayda Murakami",
@@ -341,22 +344,27 @@ ui <- navbarPage(
                       tags$div(class='person',
                                tags$h2("Will Poncy"),
                                tags$img(src="images/people/will.jpg"),tags$br(),
-                               tags$h3("Will is a senior undergraduate at Virginia Tech majoring in environmental data science. After graduate school, he aims to find a career at the intersection of geospatial analysis, unmanned 
-                                       aerial vehicles, and environmental science.")
+                               tags$h3("Will is a Virginia Tech environmental data science major and a FAA-licensed drone pilot. In the future, he aims to conduct graduate research at the intersection of geospatial analysis, unmanned 
+                                       aerial vehicles, and environmental science. During his free time he enjoys writing, weightlifting and experimenting with web design.")
                       )),
              "Dartmouth College",
              tabPanel("Amelia Fitch",
                       tags$div(class='person',
                                tags$h2("Amelia Fitch"),
                                tags$img(src="images/people/amelia.jpg"),tags$br(),
-                               tags$h3("Amelia is JSEP fellow and Ph.D. candidate in the Hicks Pries Lab in Dartmouth's Ecology, Evolution, Ecosystems, and Society program.
-                                        Her research primarily investigates how soil microbes affect decomposition and nutrient cycling in northeastern forests.")
+                               tags$h3("Amelia is a PhD candidate in the Ecology, Evolution, Environment, and Society graduate program, working with Caitlin Hicks Pries. She earned a BS at the University of Oregon, where she 
+                                       studied tidal wetlands, and MS at the University of Cambridge studying boreal lake sediments. She first became interested in soil during her contrbutions to a 
+                                       estuary restoration project while working as a park ranger in Oregon. Her current work is focused on how soil microbes (and specifically these really cool fungi called mycorrhizae) affect decomposition and nutrient cycling in northeastern forests.
+                                       Outside of research she loves baking sourdough, trail running, or mountain biking with her dog Waldo. ")
                       )),
              tabPanel("Eva Legge",
                       tags$div(class='person',
                                tags$h2("Eva Legge"),
                                tags$img(src="images/people/eva.jpg"),tags$br(),
-                               tags$h3("Eva is a senior at Dartmouth College majoring in Biology. In her career she hopes to improve forest resilience to global change through interdisciplinary collaboration among landowners and forest managers.")
+                               tags$h3("Eva is a senior at Dartmouth College majoring in Biology (with an Ecology concentration), and an aspiring forest ecologist working at the nexus of mycorrhizal ecology and adaptive management.
+                               As a member of the Hicks Pries Soil Ecology Lab, her research examines the role arbuscular mycorrhizae may play in facilitating forest regeneration under varied levels of forest disturbance 
+                               (selective harvest and quarter-acre clear cuts). Eva is also an avid science communicator, a practice inspired by her science writer grandfather. She believes good communication is necessary 
+                                       for any scientific practice that strives to be wide-reaching and inclusive. Outside of research, she loves watching Gilmore Girls, gardening, and playing music with her band.")
                       ))
            ))
   )
