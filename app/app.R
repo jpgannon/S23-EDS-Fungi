@@ -61,7 +61,7 @@ ui <- navbarPage(
   
   # Changing the theme to minimalist black text on white background appearance
   theme = bslib::bs_theme(bootswatch = "lux"),
-  "Celement Woodlot Data",
+  "Clement Woodlot Data",
   
   # CSS sheet for styling text, images, etc
   includeCSS("www/style.css"),
@@ -315,17 +315,6 @@ ui <- navbarPage(
   tabPanel("About the Authors",
            navlistPanel(id = "tabset",
              "Virginia Tech",
-             tabPanel("JP Gannon, PhD",
-                      tags$div(class='person',
-                               tags$h2("J.P. Gannon, PhD"),
-                               tags$img(src="images/people/jp.webp"),tags$br(),
-                               tags$h3("JP Gannon is a collegiate assistant professor of environmental data science in
-                               the Forest Resources and Environmental Conservation (FREC) department in the College of Natural Resources and Environment at Virginia Tech.
-                                       His Research focuses on examining streamflow generation in rivers and streams at a variety of scales, and using remotely
-                                       sensed data to address environmental issues. He is passionate about teaching and involving undergraduate students in research projects, 
-                                       and enjoys mountain biking in his free time.")
-                               )
-                      ),
              tabPanel("Rasheed Pongnon",
                       tags$div(class='person',
                                tags$h2("Rasheed Pongnon"),
@@ -346,6 +335,16 @@ ui <- navbarPage(
                                tags$h3("Will is a Virginia Tech environmental data science major and a FAA-licensed remote pilot. In the future, he aims to conduct graduate research at the intersection of geospatial analysis, unmanned 
                                        aerial vehicles, and environmental science.")
                       )),
+             tabPanel("J.P. Gannon, PhD",
+                      tags$div(class='person',
+                               tags$h2("J.P. Gannon, PhD"),
+                               tags$img(src="images/people/jp.webp"),tags$br(),
+                               tags$h3("Dr. JP Gannon is a collegiate assistant professor of environmental data science in
+                               the Forest Resources and Environmental Conservation (FREC) department in the College of Natural Resources and Environment at Virginia Tech.
+                                       His Research focuses on examining streamflow generation in rivers and streams at a variety of scales, and using remotely
+                                       sensed data to address environmental issues. He is passionate about teaching and involving undergraduate students in research projects, 
+                                       and enjoys mountain biking in his free time.")
+                      )),
              "Dartmouth College",
              tabPanel("Amelia Fitch",
                       tags$div(class='person',
@@ -364,7 +363,24 @@ ui <- navbarPage(
                                As a member of the Hicks Pries Soil Ecology Lab, her research examines the role arbuscular mycorrhizae may play in facilitating forest regeneration under varied levels of forest disturbance 
                                (selective harvest and quarter-acre clear cuts). Eva is also an avid science communicator, a practice inspired by her science writer grandfather. She believes good communication is necessary 
                                        for any scientific practice that strives to be wide-reaching and inclusive. Outside of research, she loves watching Gilmore Girls, gardening, and playing music with her band.")
-                      ))
+                      )),
+             tabPanel("Sarah Goldsmith",
+                      tags$div(class='person',
+                               tags$h2("Sarah Goldsmith"),
+                               tags$img(src="images/people/sarah.webp"),tags$br(),
+                               tags$h3("Sarah is the laboratory technician in the Hicks Pries lab. She graduated from the Rochester Institute of Technology with a Master and Bachelor of Environmental Science where she studied salt marsh ecosystems.
+                               Since then, she has held positions working in wetlands at the Cape Cod National Seashore in Truro, MA, and monitoring water quality at the Green Mountain Conservation Group in Effingham, NH. 
+                               Sarah grew up in NH and is happy to be back and contributing to all aspects of research in the Hicks Pries lab. In her spare time, she enjoys running, cross country skiing, creating art, hanging out with her cat, and reading.")
+                      )),
+             tabPanel("Caitlin Hicks Pries, PhD",
+                      tags$div(class='person',
+                               tags$h2("Catlin Hicks Pries, PhD"),
+                               tags$img(src="images/people/pries.webp"),tags$br(),
+                               tags$h3("Dr. Caitlin Hicks Pries is an Assistant Professor in the Department of Biological Sciences at Dartmouth College who is broadly interested in how terrestrial ecosystems and soils are responding to global change. 
+                               Caitlin did her undergraduate work in biology and environmental studies at Middlebury College and earned an M.S. in Soil and Water Science and a Ph.D. in Biology at the University of Florida. She was a postdoctoral
+                               researcher in the Climate Sciences Department at the Lawrence Berkeley National Laboratory before moving to Dartmouth.")
+                      )),
+             
            ))
   )
 
