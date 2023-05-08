@@ -1,10 +1,19 @@
+#This code preforms the data modifications to the data used in the Clement Woodlot app.
+#Follow the instructions provided if there are any additions to the data sets used
+
 library(plotly)
 library(dplyr)
 library(rsconnect)
 library(tidyverse)
 library(stringr)
 
+
 # Reading in datasets
+# before starting, import the final growth dataset as "finalgrowth_dat",
+# the final moisture data set as "finalmstr_dat",
+# seedling data as "seedling_dat" and the
+# Final survival dataset as "finalsurv_dat"
+
 cbPalette <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7", "#669919", "#001600")
 finalgrowth_dat <- read.csv("www/files/Final.DataTable.growth.v.15N.csv")
 finalsurv_dat <- read.csv("www/files/FINALfulltable.survival.csv")
@@ -13,22 +22,37 @@ tag_id_dat<- read.csv("www/files/tagID_byprox.csv")
 seedling_dat <- read.csv("www/files/seedling.csv")
 
 
-# Merging and character substitutions 
-tag_id_dat$ID_new <- gsub('_','.',tag_id_dat$Tag.ID)
+# Below are a series of code blocks to merge the data into a single dataset allowing for the customizable plots
 
+# The following code will merge growth and survival data into merge_dat1
 merge_dat1 <- merge(finalgrowth_dat,finalsurv_dat)
 
+# The line below creates merge_dat2 by incorporating moisture data into the previously merged growth and survival data
 merge_dat2 <- merge(merge_dat1, finalmstr_dat)
+
+# The tag IDs within the seedling_dat is then modified to match that of the merged datasets
+tag_id_dat$ID_new <- gsub('_','.',tag_id_dat$Tag.ID)
 merge_dat2$ID2 <- gsub('_','.',merge_dat2$Tag.ID)
 merge_dat2$ID2 <- gsub(' ','.',merge_dat2$ID2)
+
+# A new column with the position of the legacy myc speceis is then created here
 merge_dat2$leg_pos <- paste(merge_dat2$myc.legacy.type, merge_dat2$Position)
 
+# seedling data is then added to the merged dataset bt the new ID
 merge_dat3 <- merge(seedling_dat,merge_dat2, by ='ID2')
+
+# Percent Growth change is calculated and added to a new column
 merge_dat3$PCG <- (((merge_dat3$HT.cm - merge_dat3$HT.cm.initial)/merge_dat3$HT.cm.initial)*100)
+
+# Similar to before, here the postion of current myc species is put into a new column
 merge_dat3$Mycorrhizal.Species.Position <- paste(merge_dat3$Mycorrhizal.Species.Type, merge_dat3$Position)
+
+# Slash levels are converted to character values
 merge_dat3$Slash <- as.character(merge_dat3$Slash)
 
-# Data cleaning for further readability when plotting speies and mycorrhizae types
+# Finally, the cells of containing tree species & mycorrhiza types are adjusted to be more clear in visualizations
+# Columns are also renamed for more descrriptive axes when plotting
+# merge_dat3 is the final merged dataset that will be used when creating the customizable plots
 merge_dat3 <- merge_dat3 %>% 
   mutate(Mycorrhizal.Species.Type = case_when(Mycorrhizal.Species.Type == "EcM" ~ "Ectomycorrhiza",
                              Mycorrhizal.Species.Type == "AM" ~ "Arbuscular Mycorrhiza")) %>%
@@ -56,7 +80,7 @@ merge_dat3 <- merge_dat3 %>%
   rename("Legacy Plot Position" = "leg_pos") 
 
 # Using navbar page to structure the overall app. This will categorize the app into 
-# distinct sections: Home page, data page, tree information page. 
+# distinct sections: Home page, data page, tree information page, bios page
 ui <- navbarPage(
   
   # Changing the theme to minimalist black text on white background appearance
@@ -89,7 +113,7 @@ ui <- navbarPage(
            tags$section(
              tags$h1(class='greeting','About the Project'),
              tags$div(class='text',
-                      tags$h3(class='blurb', "As Virginia Tech undergraduates majoring in Environmental Data Science,
+                      tags$h3("As Virginia Tech undergraduates majoring in Environmental Data Science,
                                our team was tasked with creating an R-Shiny app of effective data analysis for our
                                capstone project. Our group worked with scientists at Dartmouth College to investigate 
                                how post-logging legacy mycorrhizal fungi can affect seedling regeneration. The app 
@@ -105,11 +129,11 @@ ui <- navbarPage(
            ),
            
            
-           # Blurb on project design, image included from Eva's research poster. 
+           # Blurb on project design, close up image of seedlings included for further reference 
            tags$section(
              tags$h1(class='greeting','Context & Design'),
              tags$div(class='text',
-                      tags$h3(class='blurb', "Throughout natural history, trees and mycorrhizal fungi have coevolved
+                      tags$h3("Throughout natural history, trees and mycorrhizal fungi have coevolved
                               in a symbiotic relationship. Trees provide mycorrhizae with photosynthesized sugars, which in
                               turn assist trees in uptake of nutrients like nitrogen and phosphorous. For project setup, eight
                               quarter-acre plots in Corinth, VT were harvested in the winter of 2020-2021. Of these eight plots, 
@@ -132,7 +156,7 @@ ui <- navbarPage(
   navbarMenu("Data",
              
        
-       # Subpage for graph for with customizable visualization of all variables across merged dataset
+       # Subpage for graph for customizable visualization of all variables across merged dataset (merge_dat3)
        tabPanel("Customizable Data Visualization",
                 titlePanel("Create your plot with the options below"),
                 
@@ -151,7 +175,7 @@ ui <- navbarPage(
                                                     "scatter")
                     ),
                     
-                    # Sidebar selection for choosing X variable 
+                    # Sidebar selection for choosing X variable of the merged dataset
                     selectInput(inputId = "mergeVarX",
                                 label = "Select X-axis Variable:",
                                 choices = list("Tree Species",
@@ -159,7 +183,7 @@ ui <- navbarPage(
                                                "Mycorrhizal Legacy Type",
                                                "Tree Position within Plot")),
                     
-                    # Sidebar selection for choosing Y variable
+                    # Sidebar selection for choosing Y variable of the merged dataset
                     selectInput(inputId = "mergeVarY",
                                 label = "Select Y-axis Variable:",
                                 choices = list("Survival Rate",
@@ -168,7 +192,7 @@ ui <- navbarPage(
                                                "N15 to N14 Ratio"))
                   ),
                   
-                  # Output of customizable plot, figure caption to describe the different graph types 
+                  # Output of customizable plot, a few line breaks and a figure caption to describe the different graph types 
                   mainPanel(
                     plotOutput("MergedPlot"),
                     tags$br(),tags$br(),tags$br(),tags$br(),tags$br(),tags$br(),
@@ -183,7 +207,7 @@ ui <- navbarPage(
                 
                 titlePanel("Growth & Survival Line Range"),
                 
-                # Sidebar input for X variable selection
+                # Sidebar input for X variable selection of the line range dataset
                 sidebarLayout(
                   sidebarPanel(
                     selectInput(inputId = "rangeVarX",
@@ -196,7 +220,7 @@ ui <- navbarPage(
                                                "Mycorrhizal Legacy Type"),
                                 selected = "Tree Species"),
                     
-                    # Sidebar input for Y variable selection
+                    # Sidebar input for Y variable selection of the line range dataset
                     selectInput(inputId = "rangeVarY",
                                 label = "Select X-axis Variable:",
                                 choices = list("Survival Rate",
@@ -214,13 +238,16 @@ ui <- navbarPage(
        ),
   
   
- # Tree catalog page that will show fast facts about each species, along with pictures and a map of geographic occurence.
+ # Tree catalog page that will show fast facts about each species, along with pictures and a map of geographic prevalence
  tabPanel("Tree Information Catalog",
           titlePanel("Learn information about different species"),
           
-          # Tabset panel for navigation between different species
+          # Tabset panel is used for navigation between different species across top
             tabsetPanel(
               id = "species",
+              
+              # Individual tabs for the eight species involved in the app
+              # Each tab has a title, 2 pictures and a map. Below the figures are captions for mycorrhizal association and geographic range.
               tabPanel("Northern Red Oak",
                        tags$div(class='catalog',
                                tags$h2("Northern Red Oak - Quercus Rubra"),
@@ -305,15 +332,22 @@ ui <- navbarPage(
               )
             ),tags$br(),
           
-          # Credits for the VT dendro textbook
+          # Credits for sourcing images from the virgina Tech dendrology textbook
           tags$h5("Images and geographic ranges in the tree information catalog were sourced from the 
                   Virginia Tech Dendrology textbook, the hard work of Dr. John Seiler, Dr. John Peterson 
                   and many others. ")
    ),
  
+ 
  # Authors page to describe individuals involved in the project
   tabPanel("About the Authors",
+           
+           # Rather than using a tabset panel like the tree information catalog where the tabs would run across the top, 
+           # a navlistPanel was used to display the tabs along the left side. 
            navlistPanel(id = "tabset",
+                        
+                        # Two sublists within the navlistPanel: one for individuals from Virginia Tech and another for individuals from Dartmouth
+                        # Each tab has the individual's name, a photo of them, and a blurb about their research interests/current position
              "Virginia Tech",
              tabPanel("Rasheed Pongnon",
                       tags$div(class='person',
@@ -387,15 +421,24 @@ ui <- navbarPage(
 
 
 
-
+# Server function to handle the creation of a r-shiny session
 server <- function(input, output, session) {
 
   
-  # This output handles the plotting of the merged dataset, customized based on user input
+  # This output handles the plotting of the customizable merged dataset
+  # Series of if-statements for the different plot types based on the user's selection 
   output$MergedPlot <- renderPlot({
     
+    # For each different plot type, a temporary dataset of name 'dataset' is created 
+    # It will pull columns from merge_dat3 as shown by the [ , c(input$mergeVarX,input$mergeVarY)] syntax
+    # The resulting temporary dataset will only have two columns, one for the independent and dependent variables to plot. 
+    # Temporary dataset was created to avoid altering the merged dataset
+    
+    # Begin the series of if-statements, using violin plot as our default choice
     if (input$rb == "violin") {
       dataset <- merge_dat3[ ,c(input$mergeVarX,input$mergeVarY)]
+      
+      # Generation of a violin plot using the temporary dataset, the scale fill palette accommodates colorblind viewers
       ggplot(data = dataset, aes(x = dataset[,1], y = dataset[,2], fill = dataset[,1]))+
         geom_violin()+
         theme_minimal()+
@@ -403,17 +446,22 @@ server <- function(input, output, session) {
         theme(legend.position = "none")+
         theme(text = element_text(size = 18.5))+
         ylab(input$mergeVarY)+
-        scale_fill_manual(values = cbPalette)+
-        guides(color = guide_legend(title = "Users By guides"))
+        scale_fill_manual(values = cbPalette)
+        # guides(color = guide_legend(title = "Users By guides"))
     }
+    
+    # Next choice for visualizing data is a bar plot 
     else if (input$rb == "bar") {
       dataset <- merge_dat3[ ,c(input$mergeVarX,input$mergeVarY)]
       
+      # This mini-chunk allows for creation of standard error bars when visualizing the barplot
       colnames(dataset) <- c("Name", "Value")
       dataset <- dataset %>% 
         group_by(Name) %>% 
         summarise(mean = mean(Value), se = (sd(Value)/sqrt(length(Value)))/2)
         
+      # Generation of a bar plot using the temporary dataset, the scale fill palette accommodates colorblind viewers
+      # Take note of the geom_errorbar() line that will display the mean and standard error values we just calculated 
       ggplot(data = dataset, aes(x = Name, y = mean,fill = Name))+
         geom_col(aes(y=mean))+
         geom_errorbar(aes(ymin = mean - se, ymax = mean + se),width = 0.5)+
@@ -424,8 +472,13 @@ server <- function(input, output, session) {
         ylab(input$mergeVarY)+
         scale_fill_manual(values = cbPalette)
     }
+    
+    # Next choice for visualizing data is a box plot 
     else if (input$rb == "box") {
       dataset <- merge_dat3[ ,c(input$mergeVarX,input$mergeVarY)]
+      
+      
+      # Generation of a bar plot using the temporary dataset, the scale fill palette accommodates colorblind viewers
       ggplot(data = dataset, aes(x = dataset[,1], y = dataset[,2], fill = dataset[,1]))+
         geom_boxplot()+
         theme_minimal()+
@@ -435,8 +488,13 @@ server <- function(input, output, session) {
         ylab(input$mergeVarY)+
         scale_fill_manual(values = cbPalette)
     }
+    
+    # Final choice for visualizing data is a scatterplot 
     else if (input$rb == "scatter") {
       dataset <- merge_dat3[ ,c(input$mergeVarX,input$mergeVarY)]
+      
+      # Generation of a bar plot using the temporary dataset, the scale fill palette accommodates colorblind viewers
+      # Take note of the position = 'jitter' line, wherein all values were included to show distribution from a broader perspective rather than just mean or max
       ggplot(data = dataset, aes(x = dataset[,1], y = dataset[,2]))+
         geom_point(color = "#009e73", position = "jitter")+
         theme_minimal()+
@@ -475,13 +533,21 @@ server <- function(input, output, session) {
   
   # Output handling rendering of line range plot
   output$rangePlot <- renderPlot({
+    
+    # Creation of temporary dataset similar to before, ensures merge_dat3 is not altered
     dataset <- merge_dat3[ ,c(input$rangeVarX,input$rangeVarY)]
+    
+    # Aggregation of data
     data_sums <- aggregate(dataset[,2] ~ dataset[,1],data = dataset, summary)
+    
+    # Determining standard deviation of aggregated dataset to properly display line range
     stanD <- aggregate(dataset[,2] ~ dataset[,1],data = dataset, sd)
     sums2 <- as.data.frame(data_sums[,2])
     
     data_sums[,2:7] <- sums2
     data_sums[,8] <- stanD[,2]
+    
+    # Generation of linerange plot using the summed dataset, scale colors chosen to accomodate colorblind viewers
     ggplot()+
       geom_vline(data = data_sums, mapping = aes(xintercept = 0))+
       geom_linerange(data = data_sums, mapping = aes(y = data_sums[,1], 
@@ -510,5 +576,5 @@ server <- function(input, output, session) {
 
 }
 
-
+# Function call to host shiny app on live server
 shinyApp(ui = ui, server = server)

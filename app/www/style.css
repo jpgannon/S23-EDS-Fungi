@@ -66,9 +66,8 @@ section {
   border-image: url(https://64.media.tumblr.com/5d7ab997c9daa879a320f9ef21e895b7/tumblr_ooeddrvOJE1uzwgsuo1_400.gif) 30;
 }
 
-/* Hover effect to remove grayscale filter and scale images to 102.5% */
+/* Hover effect to scale images to 102.5% */
 section img:hover {
-  filter: grayscale(0%);
   transform: scale(1.05);
 }
 
@@ -89,16 +88,14 @@ section img:hover {
   animation: fadeIn 3s;
   padding-bottom: .1em;
 }
+
+/* Container for paragraphs on home page */
 .text{
  width: 40vw;
  float: left;
 }
-.blurb{
-  width: 45vw;
-  float: left;
-  padding-left: 2em;
-}
 
+/* Container for images on the home page*/
 .fig{
   width: 40vw;
   float: right;
@@ -106,6 +103,7 @@ section img:hover {
   transition: all 1s;
 }
 
+/* Styling of images on home page */
 .fig img{
   place-content: center;
   height: 25em;
@@ -116,16 +114,19 @@ section img:hover {
   border-image: url(https://64.media.tumblr.com/5d7ab997c9daa879a320f9ef21e895b7/tumblr_ooeddrvOJE1uzwgsuo1_400.gif) 30;
 }
 
+/* Figure caption for images on home page */
 figcaption{
   place-content: center;
   padding-top: 1em;
   font-size: 1.2em;
 }
 
+/* Container for tree information catalog */
 .catalog{
   width: 95vw;
 }
 
+/* Styling images within tree information catalog*/
 .catalog img {
   height: 22em;
   width: 20em;
@@ -135,10 +136,13 @@ figcaption{
   border-radius: 3%;
   border: .25rem solid #ddd;
 }
+
+/* Hover effect on tree information catalog images */
 .catalog img:hover {
   transform: scale(1.05);
 }
 
+/* Styling of images on biographies page */
 .person img {
   height: 30em;
   width: 30em;
@@ -148,6 +152,8 @@ figcaption{
   border: .5rem solid #ddd;
   border-image: url(https://64.media.tumblr.com/5d7ab997c9daa879a320f9ef21e895b7/tumblr_ooeddrvOJE1uzwgsuo1_400.gif) 30;
 }
+
+/* Hover effect for images on biographies page */
 .person img:hover {
   transform: scale(1.03);
 }
@@ -159,7 +165,7 @@ figcaption{
   100% { opacity: 1; }
 }
 
- /* ===== Scrollbar CSS ===== */
+ /* Scrollbar styling */
     /* Firefox */
 * {
   scrollbar-width: thin;
